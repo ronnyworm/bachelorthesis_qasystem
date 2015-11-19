@@ -1,0 +1,80 @@
+OpenAL 1.1 Specification and Reference
+
+2.7. AL Errors
+OpenAL detects only a subset of those conditions that could be considered errors. This is
+because in many cases error checking would adversely impact the performance of an
+error-free program. The command:
+ALenum alGetError(void)
+is used to obtain error information. Each detectable error is assigned a numeric code.
+When an error is detected by AL, a flag is set and the error code is recorded. Further
+errors, if they occur, do not affect this recorded code. When alGetError is called, the code
+is returned and the flag is cleared, so that a further error will again record its code. If a
+call to alGetError returns AL_NO_ERROR then there has been no detectable error since
+the last call to alGetError (or since the AL was initialized).
+Error codes can be mapped to strings. The alGetString function returns a pointer to a
+constant (literal) string that is identical to the identifier used for the enumeration value, as
+defined in the specification.
+Table 2.2: Error Conditions
+Name
+
+Description
+
+AL_NO_ERROR
+
+There is no current error.
+
+AL_INVALID_NAME
+
+Invalid name parameter.
+
+AL_INVALID_ENUM
+
+Invalid parameter.
+
+AL_INVALID_VALUE
+
+Invalid enum parameter value.
+
+AL_INVALID_OPERATION
+
+Illegal call.
+
+AL_OUT_OF_MEMORY
+
+Unable to allocate memory.
+
+The table above summarizes the AL errors. When an error flag is set, results of AL
+operations are undefined only if AL_OUT_OF_MEMORY has occurred. In other cases,
+the command generating the error is ignored so that it has no effect on AL state or output
+buffer contents. If the error generating command returns a value, it returns zero. If the
+generating command modifies values through a pointer argument, no change is made to
+these values. These error semantics apply only to AL errors, not to system errors such as
+memory access errors.
+Several error generation conditions are implicit in the description of the various AL
+commands. First, if a command that requires an enumerated value is passed a value that is
+not one of those specified as allowable for that command, the error
+AL_INVALID_ENUM results. This is the case even if the argument is a pointer to a
+symbolic constant if that value is not allowable for the given command. This will occur
+whether the value is allowable for other functions, or an invalid integer value.
+16
+
+Integer parameters that are used as names for OpenAL objects such as buffers and sources
+are checked for validity. If an invalid name parameter is specified in an OpenAL
+command, an AL_INVALID_NAME error will be generated and the command is
+ignored.
+An attempt to set integral or floating point values out of the specified range will result in
+the error AL_INVALID_VALUE. The specification does not guarantee that the
+implementation emits AL_INVALID_VALUE if a NaN or infinity value is passed in for
+a float or double argument (as the specification does not enforce possibly expensive
+testing of floating point values).
+Commands can be invalid. For example, certain commands might not be applicable to a
+given object. There are also illegal combinations of tokens and values as arguments to a
+command. OpenAL responds to any such illegal command with an
+AL_INVALID_OPERATION error.
+If memory is exhausted as a side effect of the execution of an AL command, either on
+system level or by exhausting the allocated resources at AL's internal disposal, the error
+AL_OUT_OF_MEMORY may be generated. This can also happen independent of recent
+commands if OpenAL has to request memory for an internal task and fails to allocate the
+required memory from the operating system.
+Otherwise errors are generated only for conditions that are explicitly described in this
+specification.
