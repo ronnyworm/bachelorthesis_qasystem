@@ -26,6 +26,13 @@ def chunk(grammar, pos_tagged_sentence):
 #pos_tagged = ie_preprocess(read_document("corpora/OpenAL_1_ausschnitt.txt"))
 #print pos_tagged
 
-test_sent = [('OpenAL', 'NNP'), ('detects', 'VBZ'), ('only', 'RB'), ('a', 'DT'), ('subset', 'NN'), ('of', 'IN'), ('those', 'DT'), ('conditions', 'NNS'), ('that', 'IN'), ('could', 'MD'), ('be', 'VB'), ('considered', 'VBN'), ('errors', 'NNS'), ('.', '.')]
-chunks = chunk("NP: {<DT>?<JJ>*<NN>}", test_sent)
+#test_sent = [('OpenAL', 'NNP'), ('detects', 'VBZ'), ('only', 'RB'), ('a', 'DT'), ('subset', 'NN'), ('of', 'IN'), ('those', 'DT'), ('conditions', 'NNS'), ('that', 'IN'), ('could', 'MD'), ('be', 'VB'), ('considered', 'VBN'), ('errors', 'NNS'), ('.', '.')]
+test_sent = [('These', 'DT'), ('error', 'NN'), ('semantics', 'NNS'), ('apply', 'RB'), ('only', 'RB'), ('to', 'TO'), ('AL', 'NNP'), ('errors', 'NNS'), (',', ','), ('not', 'RB'), ('to', 'TO'), ('system', 'VB'), ('errors', 'NNS'), ('such', 'JJ'), ('as', 'IN'), ('memory', 'NN'), ('access', 'NN'), ('errors', 'NNS'), ('.', '.')]
+# 1. Chunker
+#chunks = chunk("NP: {<DT>?<JJ>*<NN>}", test_sent)
+# 2. Chunker
+chunks = chunk("NP: {<DT>?<JJ.*>*<NN.*>+}", test_sent)
+# eigener Chunker
+#chunks = chunk("NP: {<DT>?<JJ.*>*<NN.*>+}<VB*>", test_sent)
+
 chunks.draw()
