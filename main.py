@@ -15,7 +15,7 @@ def ie_preprocess(document):
 
 	return sentences
 
-# von seite 265
+# von Seite 265
 def chunk(grammar, pos_tagged_sentence):
 	chunkparser = nltk.RegexpParser(grammar)
 	result = chunkparser.parse(pos_tagged_sentence)
