@@ -5,3 +5,7 @@ echo "filename;sentence number;arg1;rel;arg2;arg1 start;arg1 end;rel start;rel e
 sed 's/	/;/g' output.txt >> output.csv
 rm output.txt
 
+./relation_extract.py
+./process_question.sh
+
+# next: Synonyme zur question finden und Ähnlichkeit zu Tabellennamen herausfinden
