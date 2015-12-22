@@ -9,7 +9,7 @@ def warning(*objs):
 	print("WARNING: ", *objs, file=sys.stderr)
 
 if len(sys.argv) != 2:
-	warning("Es muss ein Wort (am besten ein Verb) uebergeben werden!")
+	warning("Es muss ein Wort (am besten ein Verb) uebergeben werden! Das hier wurde uebergeben: " + str(sys.argv))
 	sys.exit(1)
 
 word = sys.argv[1]

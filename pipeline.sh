@@ -7,5 +7,9 @@ rm output.txt
 
 ./relation_extract.py
 ./process_question.sh
+./get_synonyms.py "$(awk 'NR == 2' question_normalised.txt)"
+
+
+rm question_normalised.txt
 
 # next: Synonyme zur question finden und Ähnlichkeit zu Tabellennamen herausfinden
