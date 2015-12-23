@@ -1,4 +1,5 @@
 #!/usr/bin/env python
+#coding=UTF-8
 
 from __future__ import print_function
 import nltk
@@ -9,7 +10,8 @@ def warning(*objs):
 	print("WARNING: ", *objs, file=sys.stderr)
 
 if len(sys.argv) != 2:
-	warning("Es muss ein Wort (am besten ein Verb) uebergeben werden! Das hier wurde uebergeben: " + str(sys.argv))
+	warning("Es muss ein Wort (am besten ein Verb) übergeben werden! Das hier wurde übergeben: " + str(sys.argv))
+	warning("Es kann sein, dass das Skript keine Ausgabe hat. Das bedeutet, dass kein Synonym gefunden wurde.")
 	sys.exit(1)
 
 word = sys.argv[1]
