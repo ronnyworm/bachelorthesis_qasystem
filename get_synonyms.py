@@ -16,7 +16,6 @@ if len(sys.argv) < 2 or len(sys.argv) > 3:
 	warning("Es kann sein, dass das Skript keine Ausgabe hat. Das bedeutet, dass kein Synonym gefunden wurde.")
 	sys.exit(1)
 
-word = sys.argv[1]
 if len(sys.argv) == 3:
 	severe_level = int(sys.argv[2])
 else:
@@ -29,6 +28,7 @@ else:
 	similarity_threshold = 0.2
 	max_filtered_synset_index = 0
 
+word = sys.argv[1].replace(" ", "_")
 
 try:
 	ss = wn.synset(word + ".v.01")

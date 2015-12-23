@@ -43,10 +43,11 @@ def get_matching_tables(table_names, word, synonyms):
 		if word in str(name):
 			result += [ name ]
 
-	for syn in synonyms.split(", "):
-		for name in names:
-			if syn in str(name):
-				result += [ name ]
+	if synonyms != "":
+		for syn in synonyms.split(", "):
+			for name in names:
+				if syn in str(name):
+					result += [ name ]
 
 	return result
 
