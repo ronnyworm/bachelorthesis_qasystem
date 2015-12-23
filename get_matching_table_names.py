@@ -23,6 +23,9 @@ if not os.path.isfile(dbname):
 	print("Die Datei %s existiert nicht" % dbname)
 	sys.exit(2)
 
+word = sys.argv[2]
+synonyms = sys.argv[3]
+
 def get_table_names(dbfilename):
 	conn = sqlite3.connect(dbfilename)
 	c = conn.cursor()
@@ -33,4 +36,20 @@ def get_table_names(dbfilename):
 
 	return names
 
-print(get_table_names(dbname))
+def get_matching_tables(table_names, word, synonyms):
+	result = []
+
+	for name in names:
+		if word in str(name):
+			result += [ name ]
+
+	for syn in synonyms.split(", "):
+		for name in names:
+			if syn in str(name):
+				result += [ name ]
+
+	return result
+
+names = get_table_names(dbname)
+print(get_matching_tables(names, word, synonyms))
+

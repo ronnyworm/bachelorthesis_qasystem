@@ -7,7 +7,9 @@ rm output.txt
 
 ./relation_extract.py output.csv relations.db
 ./process_question.sh
-./get_synonyms.py "$(awk 'NR == 2' question_normalised.txt)"
+question_verb="$(awk 'NR == 2' question_normalised.txt)"
+syns=$(./get_synonyms.py "$question_verb" 2)
+./get_matching_table_names.py relations.db "$question_verb" "$syns"
 
 
 rm question_normalised.txt
