@@ -5,7 +5,7 @@ echo "filename;sentence number;arg1;rel;arg2;arg1 start;arg1 end;rel start;rel e
 sed 's/	/;/g' output.txt >> output.csv
 rm output.txt
 
-./relation_extract.py
+./relation_extract.py output.csv relations.db
 ./process_question.sh
 ./get_synonyms.py "$(awk 'NR == 2' question_normalised.txt)"
 
