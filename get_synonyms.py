@@ -9,17 +9,19 @@ from nltk.corpus import wordnet as wn
 def warning(*objs):
 	print("WARNING: ", *objs, file=sys.stderr)
 
-if len(sys.argv) < 2 or len(sys.argv) > 3:
-	warning("Es muss ein Wort (am besten ein Verb) übergeben werden! Das hier wurde übergeben: " + str(sys.argv))
-	warning("Es kann als zweiter Parameter übergeben werden, wie locker nach Synonymen gesucht werden soll:")
+if len(sys.argv) < 2 or len(sys.argv) > 4:
+	warning("Es muss ein Wort übergeben werden!")
+	warning("Es kann als zweiter Parameter übergeben werden, nach welchen Worten gesucht werden soll (v ist Verb (Standard), n ist Substantiv).")
+	warning("Es kann als dritter Parameter übergeben werden (dann ist der zweite obligatorisch), wie locker nach Synonymen gesucht werden soll:")
 	warning("1 ist streng (Standard), 2 ist locker")
 	warning("Es kann sein, dass das Skript keine Ausgabe hat. Das bedeutet, dass kein Synonym gefunden wurde.")
+	warning("Das hier wurde übergeben: " + str(sys.argv))
 	sys.exit(1)
 
-if len(sys.argv) == 3:
-	severe_level = int(sys.argv[2])
-else:
-	severe_level = 1
+
+severe_level = 1
+if len(sys.argv) == 4:
+	severe_level = int(sys.argv[3])
 
 if severe_level > 1:
 	similarity_threshold = 0.15
@@ -30,10 +32,19 @@ else:
 
 word = sys.argv[1].replace(" ", "_")
 
+
+word_class = "v"
+if len(sys.argv) > 2:
+	word_class = sys.argv[2]
+	if word_class != 'v' and word_class != 'n':
+		warning("Die Wortart " + word_class + " wird nicht unterstützt ...")
+		sys.exit(3)
+		
+
 try:
-	ss = wn.synset(word + ".v.01")
+	ss = wn.synset(word + "." + word_class + ".01")
 except Exception, e:
-	warning("Das Wort " + word + " ist kein Verb ...")
+	warning("Das Wort " + word + " wurde nicht gefunden ...")
 	sys.exit(2)
 
 #similar_synsets = [str(ss.path_similarity(synset)) + ":" + str(synset.name()) for synset in wn.synsets(word) if ss.path_similarity(synset) != 1.0 and ss.path_similarity(synset) > 0.2]
