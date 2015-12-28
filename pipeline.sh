@@ -12,23 +12,24 @@ fi
 
 ./relation_extract.py output.csv relations.db
 
-q="Is he one of a kind?"
+#q="Is he one of a kind?"
+#q="Is it true that he built this house?" -> ein Ergebnis bei den Tabellen
+q="Where has he found the truth?"	# -> drei Ergebnisse bei den Tabellen
 #./process_question.sh "How many tables are in this room?"
 ./process_question.sh "$q"
 res=$?
 
 if [ $res -eq 1 ]; then
-	./process_question_nltk.py "$q"
 	exit
 fi
 
 question_verb="$(awk 'NR == 2' question_normalised.txt)"
 syns=$(./get_synonyms.py "$question_verb" 2)
-echo "syns: $syns"
+#echo "syns: $syns"
 ./get_matching_table_names.py relations.db "$question_verb" "$syns"
 
 # find matches in tables
 
 # compose_answers
 
-rm question_normalised.txt
+#rm question_normalised.txt

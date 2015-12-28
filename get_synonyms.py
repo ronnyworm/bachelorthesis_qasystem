@@ -18,6 +18,8 @@ if len(sys.argv) < 2 or len(sys.argv) > 4:
 	warning("Das hier wurde übergeben: " + str(sys.argv))
 	sys.exit(1)
 
+# Beispiel für ein Wort, bei dem für die verschiedenen Suchen andere Ergebnisse kommen:
+# part
 
 severe_level = 1
 if len(sys.argv) == 4:
@@ -39,7 +41,7 @@ if len(sys.argv) > 2:
 	if word_class != 'v' and word_class != 'n':
 		warning("Die Wortart " + word_class + " wird nicht unterstützt ...")
 		sys.exit(3)
-		
+
 
 try:
 	ss = wn.synset(word + "." + word_class + ".01")
