@@ -30,6 +30,7 @@ def get_table_names(dbfilename):
 	conn = sqlite3.connect(dbfilename)
 	c = conn.cursor()
 
+	# Vorsicht: names wird Tupel enthalten
 	names = [row for row in c.execute('SELECT name FROM sqlite_master WHERE type = "table"')]
 
 	conn.close()
@@ -41,16 +42,16 @@ def get_matching_tables(table_names, word, synonyms):
 
 	for name in names:
 		if word in str(name):
-			result += [ name ]
+			result += [ name[0] ]
 
 	if synonyms != "":
 		for syn in synonyms.split(", "):
 			for name in names:
 				if syn in str(name):
-					result += [ name ]
+					result += [ name[0] ]
 
 	return result
 
 names = get_table_names(dbname)
-print(get_matching_tables(names, word, synonyms))
+print(str(get_matching_tables(names, word, synonyms)).replace("u\'", "").replace("\'", "").replace("[", "").replace("]", ""))
 
