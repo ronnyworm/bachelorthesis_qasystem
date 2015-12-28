@@ -27,4 +27,8 @@ syns=$(./get_synonyms.py "$question_verb" 2)
 echo "syns: $syns"
 ./get_matching_table_names.py relations.db "$question_verb" "$syns"
 
+# find matches in tables
+
+# compose_answers
+
 rm question_normalised.txt
