@@ -10,11 +10,15 @@ else
 	echo "Database already constructed."
 fi
 
-./relation_extract.py output.csv relations.db
+db="relations.db"
+qfile="question_normalised.txt"
+
+./relation_extract.py output.csv $db
 
 #q="Is he one of a kind?"
 #q="Is it true that he built this house?" -> ein Ergebnis bei den Tabellen
-q="Where has he found the truth?"	# -> drei Ergebnisse bei den Tabellen
+#q="Where has he found the truth?"	# -> drei Ergebnisse bei den Tabellen
+q="Did he ever find the error?"
 #./process_question.sh "How many tables are in this room?"
 ./process_question.sh "$q"
 res=$?
@@ -23,13 +27,9 @@ if [ $res -eq 1 ]; then
 	exit
 fi
 
-question_verb="$(awk 'NR == 2' question_normalised.txt)"
-syns=$(./get_synonyms.py "$question_verb" 2)
+question_verb="$(awk 'NR == 2' $qfile)"
+syns=$(./get_synonyms.py "$question_verb" v 2)
 #echo "syns: $syns"
-./get_matching_table_names.py relations.db "$question_verb" "$syns"
+tables=$(./get_matching_table_names.py $db "$question_verb" "$syns")
 
-# find matches in tables
-
-# compose_answers
-
-#rm question_normalised.txt
+./print_matches_in_tables.py $db $qfile "$tables"

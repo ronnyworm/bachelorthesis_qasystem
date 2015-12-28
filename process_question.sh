@@ -20,6 +20,6 @@ if [ $file_size_kb -eq 0 ]; then
 	echo "Your question could not be processed, sorry."
 	exit 1
 else
-	cat question_normalised.txt
+	#cat question_normalised.txt
 	exit 0
 fi
