@@ -1,5 +1,7 @@
 #!/bin/bash
 
+debug=0
+
 if [ $# -eq 0 ]; then
     echo -n "Ask a question about OpenAL: "
     read q
@@ -9,7 +11,9 @@ fi
 
 echo "$q" > question.txt
 
-echo "Process question ..."
+if [ $debug -eq 1 ]; then
+	echo "Process question ..."
+fi
 java -Xmx512m -jar ReVerb/reverb-latest.jar question.txt 2> /dev/null | awk -v FS="\t" '{printf("%s\n%s\n%s\n", $16, $17, $18)}' > question_normalised.txt 
 rm question.txt
 

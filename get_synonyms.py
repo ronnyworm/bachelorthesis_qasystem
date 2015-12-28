@@ -6,8 +6,11 @@ import nltk
 import sys
 from nltk.corpus import wordnet as wn
 
+debug = False
+
 def warning(*objs):
-	print("WARNING: ", *objs, file=sys.stderr)
+	if debug:
+		print("WARNING: ", *objs, file=sys.stderr)
 
 if len(sys.argv) < 2 or len(sys.argv) > 4:
 	warning("Es muss ein Wort übergeben werden!")

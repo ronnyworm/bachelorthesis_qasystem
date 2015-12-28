@@ -61,17 +61,24 @@ relevant_in_question += subj + obj
 with_synonyms = []
 with_synonyms += list(relevant_in_question)
 
+# Synonyme finden
 scriptpath = os.path.dirname(os.path.abspath(__file__))
 for word in relevant_in_question:
-	res = check_output(["./get_synonyms.py", word, "n"]).strip().replace("_", " ").split(", ")
-	with_synonyms += res
+	res = ""
+	try:
+		res = check_output(["./get_synonyms.py", word, "n"]).strip().replace("_", " ").split(", ")
+		if res != ['']:
+			with_synonyms += res
+	except Exception, e:
+		pass
 
 conn = sqlite3.connect(dbname)
 c = conn.cursor()
 
 for table in tables:
 	for syn in with_synonyms:
-		#print("q: " + 'SELECT * FROM ' + scrub(table) + ' WHERE subject like "%' + scrub(syn) + '%" or object like "%' + scrub(syn) + '%"')
+		if debug:
+			print("q: " + 'SELECT * FROM ' + scrub(table) + ' WHERE subject like "%' + scrub(syn) + '%" or object like "%' + scrub(syn) + '%"')
 		for row in c.execute('SELECT * FROM ' + scrub(table) + ' WHERE subject like "%' + scrub(syn) + '%" or object like "%' + scrub(syn) + '%"'):
 
 			first = row[0][:1].upper() + row[0][1:]
