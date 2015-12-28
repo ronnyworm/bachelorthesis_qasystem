@@ -26,10 +26,11 @@ def chunk(grammar, pos_tagged_sentence):
 
 	return result
 
+# oder doch lieber mit dem Stanford Parser hier weitermachen?
+
 chunks = chunk("NP: {<DT>?<JJ.*>*<NN.*>+}", pos_tagged)
 
 print(chunks)
-sys.exit(0)
 
 pattern = re.compile("^VB.*$")
 lemmatizer = WordNetLemmatizer()
