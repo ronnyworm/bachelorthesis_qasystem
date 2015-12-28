@@ -75,6 +75,8 @@ for word in relevant_in_question:
 conn = sqlite3.connect(dbname)
 c = conn.cursor()
 
+answer_sents = []
+
 for table in tables:
 	for syn in with_synonyms:
 		if debug:
@@ -85,9 +87,13 @@ for table in tables:
 
 			if table.endswith("_by"):
 				v = en.verb.past_participle(table.split("_")[0])
-				print("%s is %s by %s." % (first, v, row[1]))
+				answer_sents += [ "%s is %s by %s." % (first, v, row[1]) ]
 			else:
-				print("%s %ss %s." % (first, table, row[1]))
+				answer_sents += [ "%s %ss %s." % (first, table, row[1]) ]
 
 conn.close()
 
+answer_sents = set(answer_sents)
+
+for s in answer_sents:
+	print(s)

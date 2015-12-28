@@ -2,13 +2,15 @@
 
 debug=0
 
+
 if [ $# -eq 0 ]; then
-    echo -n "Ask a question about OpenAL: "
-    read q
-else
-	q="$1"
+    cat << EOF
+Als erster Parameter muss die Frage übergeben werden.
+EOF
+    exit
 fi
 
+q="$1"
 echo "$q" > question.txt
 
 if [ $debug -eq 1 ]; then
@@ -24,6 +26,8 @@ if [ $file_size_kb -eq 0 ]; then
 	echo "Your question could not be processed, sorry."
 	exit 1
 else
-	#cat question_normalised.txt
+	if [ $debug -eq 1 ]; then
+		cat question_normalised.txt
+	fi
 	exit 0
 fi
