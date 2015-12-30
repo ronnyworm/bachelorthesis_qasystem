@@ -2,25 +2,14 @@
 
 debug=0
 db="relations.db"
-qfile="question_normalised.txt"
-reverbout="output"
 corpus="corpora/OpenAL_1_ausschnitt.txt"
+qfile="question_normalised.txt"
 
 #q="Is he one of a kind?"
 #q="Is it true that he built this house?" -> ein Ergebnis bei den Tabellen
 #q="Where has he found the truth?"	# -> drei Ergebnisse bei den Tabellen
 #q="Did he ever find the error?" # -> gesamte pipeline
 #q="How many tables are in this room?" # -> keine Tabellen
-
-process_corpus(){
-	java -Xmx512m -jar ReVerb/reverb-latest.jar "$corpus" > $reverbout.txt 2> /dev/null
-	echo "filename;sentence number;arg1;rel;arg2;arg1 start;arg1 end;rel start;rel end;arg2 start;arg2 end;conf;sentence words;sentence pos tags;sentence chunk tags;arg1 normalized;rel normalized;arg2 normalized" > $reverbout.csv
-	sed 's/	/;/g' $reverbout.txt >> $reverbout.csv
-	rm $reverbout.txt
-
-	./relation_extract.py $reverbout.csv $db
-	echo "done pc"
-}
 
 
 if [ $# -eq 0 ]; then
@@ -43,33 +32,26 @@ else
 		echo "Construct database ..."
 	fi
 
-	echo "start pc"
-	process_corpus &
+	./process_corpus.sh "$corpus" $db &
 fi	
 
-if [ $# -eq 2 ]; then
-	q="$2"
-fi
 
-
-
-
-if [ -z "$q" ]; then
+if [[ $# -ne 2 || -z "$2" ]]; then
     echo -n "Ask a question about the document(s) in '$corpus': "
     read q
+else
+	q="$2"
 fi
-echo "start pq"
 ./process_question.sh "$q"
 res=$?
 if [ $res -eq 1 ]; then
+	echo "Your question could not be processed, sorry."
+	# Hier könnte ich nochmal versuchen, die Frage weiterzuverarbeiten - vll mit dem Stanford-Parser
 	exit
 fi
 
 question_verb="$(awk 'NR == 2' $qfile)"
-echo "start gs"
 syns=$(./get_synonyms.py "$question_verb" v 2)
-
-echo "wait"
 
 wait
 

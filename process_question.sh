@@ -23,7 +23,6 @@ file_size_kb=`du -k "question_normalised.txt" | cut -f1`
 
 
 if [ $file_size_kb -eq 0 ]; then
-	echo "Your question could not be processed, sorry."
 	exit 1
 else
 	if [ $debug -eq 1 ]; then
