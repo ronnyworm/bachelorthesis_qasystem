@@ -56,6 +56,7 @@ qasystem(){
 	res=$?
 	if [ $res -eq 1 ]; then
 		echo "Your question could not be processed, sorry."
+		# Hier könnte ich nochmal versuchen, die Frage weiterzuverarbeiten - vll mit dem Stanford-Parser
 		return
 	fi
 
