@@ -3,7 +3,7 @@
 debug=0
 db="relations.db"
 corpus="corpora/OpenAL_1_ausschnitt.txt"
-qfile="question_normalised.txt"
+qfile="question_relation.txt"
 
 #q="Is he one of a kind?"
 #q="Is it true that he built this house?" -> ein Ergebnis bei den Tabellen
@@ -55,7 +55,7 @@ qasystem(){
 	./process_question.sh "$q"
 	res=$?
 	if [ $res -eq 1 ]; then
-		echo "Your question could not be processed, sorry."
+		echo "I can't find the answer in the document, sorry."
 		# Hier könnte ich nochmal versuchen, die Frage weiterzuverarbeiten - vll mit dem Stanford-Parser
 		return
 	fi
@@ -71,7 +71,7 @@ qasystem(){
 	if [ ! -z "$tables" ]; then
 		answers=$(./print_matches_in_tables.py $db $qfile "$tables")
 		if [ -z "$answers" ]; then
-			echo "Unfortunately there is no information about your question."	
+			echo "Unfortunately I can't find information about your question."	
 		else
 			echo "$answers"
 		fi

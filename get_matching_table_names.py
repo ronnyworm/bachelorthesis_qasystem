@@ -40,13 +40,13 @@ def get_table_names(dbfilename):
 def get_matching_tables(table_names, word, synonyms):
 	result = []
 
-	for name in names:
+	for name in table_names:
 		if word in str(name):
 			result += [ name[0] ]
 
 	if synonyms != "":
 		for syn in synonyms.split(", "):
-			for name in names:
+			for name in table_names:
 				if syn in str(name):
 					result += [ name[0] ]
 
