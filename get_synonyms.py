@@ -6,10 +6,10 @@ import nltk
 import sys
 from nltk.corpus import wordnet as wn
 
-debug = False
+debug_level = 0
 
 def warning(*objs):
-	if debug:
+	if debug_level > 0:
 		print("WARNING: ", *objs, file=sys.stderr)
 
 if len(sys.argv) < 2 or len(sys.argv) > 4:
@@ -21,7 +21,7 @@ if len(sys.argv) < 2 or len(sys.argv) > 4:
 	warning("Das hier wurde übergeben: " + str(sys.argv))
 	sys.exit(1)
 
-# Beispiel für ein Wort, bei dem für die verschiedenen Suchen andere Ergebnisse kommen:
+# Beispiel für ein Wort, bei dem für die verschiedenen Suchen (severe_level 1 bzw 2) andere Ergebnisse kommen:
 # part
 
 severe_level = 1
@@ -55,7 +55,9 @@ except Exception, e:
 #similar_synsets = [str(ss.path_similarity(synset)) + ":" + str(synset.name()) for synset in wn.synsets(word) if ss.path_similarity(synset) != 1.0 and ss.path_similarity(synset) > 0.2]
 similar_synsets = []
 for synset in wn.synsets(word):
-	#print(str(ss.path_similarity(synset)) + " - " + str(synset.name()) + ": " + str(synset.lemma_names()))
+	if debug_level > 1:
+		print(str(ss.path_similarity(synset)) + " - " + str(synset.name()) + ": " + str(synset.lemma_names()))
+
 	if ss.path_similarity(synset) != 1.0 and ss.path_similarity(synset) > similarity_threshold:
 		similar_synsets += [ str(ss.path_similarity(synset)) + ":" + str(synset.name()) ]
 
