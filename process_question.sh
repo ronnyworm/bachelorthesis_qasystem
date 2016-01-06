@@ -22,11 +22,8 @@ if [ $debug -eq 1 ]; then
 fi
 java -Xmx512m -jar ReVerb/reverb-latest.jar "$qfile" 2> /dev/null | awk -v FS="\t" '{printf("%s\n%s\n%s\n", $16, $17, $18)}' > question_relation.txt
 
-#vll lieber mit $() ?
-file_size_kb=`du -k "question_relation.txt" | cut -f1`
 
-
-if [ $file_size_kb -eq 0 ]; then
+if [[ -z "$(cat question_relation.txt)" ]]; then
 	exit 1
 else
 	if [ $debug -eq 1 ]; then

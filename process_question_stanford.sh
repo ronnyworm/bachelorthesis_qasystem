@@ -22,16 +22,22 @@ fi
 if [[ 1 ]]; then
 	lexparser.sh "$qfile" 2> /dev/null > result.txt
 
-	rest_of_grep_call=" -B 1 -e VBD -e VBZ result.txt"
 
-	grep -A 1 $rest_of_grep_call | sed -E -e 's/^[ \t]*//' -e 's/\([A-Z]{2,} ?//g' -e 's/)//g' > tmp_relation.txt
+	./clean_parsing.sh 1 "-e VBD -e VBZ" > tmp_relation.txt
+
+	if [[ -z "$(cat tmp_relation.txt)" ]]; then
+		# nach VB suchen
+		grep -A 10 -B 1 -e VB[[:space:]] result.txt > tmptmp.txt
+		cat tmptmp.txt | head -n $(grep -n NN tmptmp.txt | cut -f1 -d:) > tmptmptmp.txt
+		./clean_parsing.sh nogrep tmptmptmp.txt
+	fi
 
 	#kein object direkt eine Zeile nach dem Prädikat gefunden im Parsing-Ergebnis
 	if [[ -z "$(awk 'NR == 3' tmp_relation.txt)" ]]; then
-		grep -A 2 $rest_of_grep_call | awk 'NR != 3' | sed -E -e 's/^[ \t]*//' -e 's/\([A-Z]{2,} ?//g' -e 's/)//g' > tmp_relation.txt
+		./clean_parsing.sh 1 "-e VBD -e VBZ" | awk 'NR != 3' > tmp_relation.txt
 	fi
+
+	cat tmp_relation.txt
 else
 	cat result.txt
 fi
-
-cat tmp_relation.txt
