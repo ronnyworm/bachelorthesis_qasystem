@@ -1,0 +1,3 @@
+java -mx1g -cp stanford-openie.jar:stanrd-openie-models.jar:slf4j.jar edu.stanford.nlp.naturalli.OpenIE <file>
+
+Wenn keine Datei übergeben wird, wird von der Standard-Eingabe eingelesen.
