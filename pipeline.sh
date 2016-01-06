@@ -3,7 +3,7 @@
 debug=0
 db="relations.db"
 corpus="corpora/CloudComputing.txt"
-qfile="question_relation.txt"
+question_relation_file="question_relation.txt"
 
 #q="Is he one of a kind?"
 #q="Is it true that he built this house?" -> ein Ergebnis bei den Tabellen
@@ -35,7 +35,8 @@ else
 		echo "Construct database ..."
 	fi
 
-	./process_corpus.sh "$corpus" $db &
+	#./process_corpus.sh "$corpus" $db &
+	./process_corpus.sh abc $db &
 fi	
 
 
@@ -52,24 +53,37 @@ qasystem(){
 	else
 		q="$2"
 	fi
-	./process_question.sh "$q"
-	res=$?
-	if [ $res -eq 1 ]; then
-		echo "I can't find the answer in the document, sorry."
-		# Hier könnte ich nochmal versuchen, die Frage weiterzuverarbeiten - vll mit dem Stanford-Parser
-		return
+
+	echo "$q" > question.txt
+
+	./process_question.sh question.txt
+	process_question_result=$?
+	if [ $process_question_result -eq 1 ]; then
+		#echo "I can't find the answer in the document, sorry."
+		./process_question_stanford.sh question.txt
+		exit
+	elif [ $process_question_result -eq 2 ]; then
+		echo "Internal Error"
+		exit
 	fi
 
-	question_verb="$(awk 'NR == 2' $qfile)"
+	rm question.txt
+
+	question_verb="$(awk 'NR == 2' $question_relation_file)"
 	syns=$(./get_synonyms.py "$question_verb" v 2)
 
 	# Warte auf process_corpus
-	wait
+	wait %1
+	process_corpus_result=$?
+	if [ $process_corpus_result -eq 1 ]; then
+		echo "I could not find the document. I must terminate this session, sorry."
+		exit
+	fi
 
 	tables=$(./get_matching_table_names.py $db "$question_verb" "$syns")
 
 	if [ ! -z "$tables" ]; then
-		answers=$(./print_matches_in_tables.py $db $qfile "$tables")
+		answers=$(./print_matches_in_tables.py $db $question_relation_file "$tables")
 		if [ -z "$answers" ]; then
 			echo "Unfortunately I can't find information about your question."	
 		else
