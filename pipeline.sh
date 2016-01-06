@@ -2,7 +2,7 @@
 
 debug=0
 db="relations.db"
-corpus="corpora/OpenAL_1_ausschnitt.txt"
+corpus="corpora/CloudComputing.txt"
 qfile="question_relation.txt"
 
 #q="Is he one of a kind?"

@@ -6,7 +6,11 @@ import os
 import os.path
 import sys
 
+debug = False
 
+# http://stackoverflow.com/questions/3247183/variable-table-name-in-sqlite
+def scrub(sent):
+	return ''.join( chr for chr in sent if chr.isalnum() or chr == '_' or chr == ' ' )
 
 if len(sys.argv) != 3:
 	print("Es muss als erster Parameter die Datei angegeben werden, in der die Ausgabe von Reverb mit Semikola statt Tab getrennt steht (und in der ersten Zeile sind nur Spaltenüberschriften).")
@@ -49,11 +53,27 @@ def create_tables(relations):
 	conn = sqlite3.connect(dbname)
 	c = conn.cursor()
 
+	existing_tables = set();
+
 	index = 0
 	for table in relations[1]:
 
-		c.execute("CREATE TABLE %s (subject text, object text)" % table) 
-		c.execute("INSERT INTO %s VALUES ('%s','%s')" % (table, relations[0][index], relations[2][index]))
+		t = scrub(table)
+
+		if t == "create":
+			t = "create_a"
+
+		if debug:
+			print("tab: " + table)
+			print("sub: " + relations[0][index])
+			print("obj: " + relations[2][index])
+			print("t: " + t)
+
+		if t not in existing_tables:
+			c.execute("CREATE TABLE %s (subject text, object text)" % str(t)) 
+		c.execute("INSERT INTO %s VALUES ('%s','%s')" % (t, scrub(relations[0][index]), scrub(relations[2][index])))
+
+		existing_tables.add(t)
 
 		index += 1	
 
