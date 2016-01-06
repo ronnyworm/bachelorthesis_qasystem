@@ -53,15 +53,21 @@ qasystem(){
 		q="$2"
 	fi
 
-	echo "$q" > question.txt
+	qfile="question.txt"
+	echo "$q" > $qfile
 
-	./process_question.sh question.txt
-	process_question_result=$?
-	if [ $process_question_result -eq 1 ]; then
-		#echo "I can't find the answer in the document, sorry."
-		./process_question_stanford.sh question.txt
-		exit
-	elif [ $process_question_result -eq 2 ]; then
+	./process_question.sh $qfile $question_relation_file
+	result_process_question=$?
+
+	if [ $result_process_question -eq 1 ]; then
+		./process_question_stanford.sh $qfile $question_relation_file
+		result_process_question_stanford=$?
+
+		if [ $result_process_question_stanford -eq 1 ]; then
+			echo "I can't find the answer in the document, sorry."
+			return
+		fi
+	elif [ $result_process_question -eq 2 ]; then
 		echo "Internal Error"
 		exit
 	fi
@@ -72,11 +78,13 @@ qasystem(){
 	syns=$(./get_synonyms.py "$question_verb" v 2)
 
 	# Warte auf process_corpus
-	wait %1
-	process_corpus_result=$?
-	if [ $process_corpus_result -eq 1 ]; then
-		echo "I could not find the document. I must terminate this session, sorry."
-		exit
+	if [[ $1 != "dbready" ]]; then
+		wait %1
+		process_corpus_result=$?
+		if [ $process_corpus_result -eq 1 ]; then
+			echo "I could not find the document. I must terminate this session, sorry."
+			exit
+		fi
 	fi
 
 	tables=$(./get_matching_table_names.py $db "$question_verb" "$syns")
