@@ -35,8 +35,7 @@ else
 		echo "Construct database ..."
 	fi
 
-	#./process_corpus.sh "$corpus" $db &
-	./process_corpus.sh abc $db &
+	./process_corpus.sh "$corpus" $db &
 fi	
 
 
