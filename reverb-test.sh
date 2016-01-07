@@ -16,8 +16,10 @@ fi
 echo "$s"
 echo "$s" > file.txt
 
+rm question_relation.txt
+
 cd ReVerb
-java -Xmx512m -jar reverb-latest.jar ../file.txt > question_relation.txt
+java -Xmx512m -jar reverb-latest.jar ../file.txt 2> /dev/null > ../question_relation.txt
 cd ..
 
 rm file.txt

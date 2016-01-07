@@ -1,11 +1,40 @@
 _ie Are you sure that Cloud Computing is possible?
 _ie When was HP founded?
-_x What do you expect from an operating system made by graduate students?
+_ie What do you expect from an operating system made by graduate students?
 _ie What do you know about calculations?
 _ie How can he push the weight?
 _sp It never resulted in pain?
-_rev How many buckets does it take to fill the sea?
-Where is the next supermarket?
-_
-_Reverb We never started the war?
-_Reverb Do I really need ten questions?
+_re How many buckets does it take to fill the sea?
+_sp Where is the next supermarket?
+_re We never started the war?
+_re Do I really need ten questions?
+_re Can china survive its crisis?
+_ie Is it true?
+_sp What is a newspaper article?
+_re Did you ever think about a complex question?
+_re Have you ever imagined a world without war?
+_sp What web browsers are mentioned in the article?
+_re Why should I use cloud computing?
+_ie Have you heard about private eyes?
+_sp What concerns are important regarding cloud computing?
+_sp How will cloud computing affect other industries?
+_sp How does cloud computing work?
+_sp What is now well on its way to becoming a household term?
+_sp Who is who in cloud computing?
+_sp What colour do your eyes have?
+_re How can I program a natural language processing application?
+_re Do questions always have to be of such a complex nature to not be understood by the system?
+_re How can I break this system again without spending the rest of my life on it?
+_ie What question breaks the system?
+_ie Is it good enough yet?
+_sp What text should I read?
+_sp Will it ever work?
+_sp Who am I?
+_sp What do I do?
+_sp Why does it always fail?
+_sp How can this be?
+_sp What is a computer?
+_sp Why do plants grow?
+_sp Why does the sun shine?
+_sp Why do people drink?
+What material is this chair built of?
