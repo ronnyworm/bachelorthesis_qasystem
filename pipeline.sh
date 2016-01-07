@@ -64,7 +64,7 @@ qasystem(){
 		result_process_question_stanford=$?
 
 		if [ $result_process_question_stanford -eq 1 ]; then
-			echo "I can't find the answer in the document, sorry."
+			echo "I do not understand your question, sorry."
 			return
 		fi
 	elif [ $result_process_question -eq 2 ]; then

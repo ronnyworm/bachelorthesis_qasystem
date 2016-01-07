@@ -1,6 +1,6 @@
 #!/bin/bash
 
-debug=1
+debug=0
 
 
 if [ $# -ne 2 ]; then
@@ -77,23 +77,8 @@ if [[ -z "$(cat $resultfile)" ]]; then
 		./clean_parsing.sh 1 "-e VB[[:space:]]" > $resultfile
 	fi
 
-	
-
-#	if [[ -z "$(cat tmp_relation.txt)" ]]; then
-#		# nach VB suchen
-#		grep -A 10 -B 1 -e VB[[:space:]] result.txt > tmptmp.txt
-#		cat tmptmp.txt | head -n $(grep -n NN tmptmp.txt | cut -f1 -d:) > tmptmptmp.txt
-#		./clean_parsing.sh nogrep tmptmptmp.txt
-#	fi
-#
-#	#kein object direkt eine Zeile nach dem Prädikat gefunden im Parsing-Ergebnis
-#	if [[ -z "$(awk 'NR == 3' tmp_relation.txt)" ]]; then
-#		./clean_parsing.sh 1 "-e VBD -e VBZ" | awk 'NR != 3' > tmp_relation.txt
-#	fi
-	#cat tmp_relation.txt
 
 	if [[ -z "$(cat $resultfile)" ]]; then
-		echo "Aaaahh"
 		exit 1
 	elif [ $debug -eq 0 ]; then
 		rm tmp_relation.txt
