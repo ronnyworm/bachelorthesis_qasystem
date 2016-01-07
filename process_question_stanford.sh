@@ -85,7 +85,7 @@ if [[ -z "$(cat $resultfile)" ]]; then
 		printf "\tKeine Extraktion möglich\n" >> pipeline_log.md
 		exit 1
 	else
-	printf "\tExtraktion mit Stanford Parser erfolgreich\n" >> pipeline_log.md
+		printf "\tExtraktion mit Stanford Parser erfolgreich\n" >> pipeline_log.md
 	fi
 
 
@@ -94,3 +94,17 @@ if [[ -z "$(cat $resultfile)" ]]; then
 else
 	printf "\tExtraktion mit Stanford Open IE erfolgreich\n" >> pipeline_log.md
 fi
+
+
+predicate=$(awk 'NR==2' $resultfile)
+word_count=$(echo $predicate | wc -w | xargs)
+
+if [[ $word_count -gt 1 ]]; then
+	# Falls ein zweites Nicht-Stoppwort herauskommt, oder noch mehr, werden diese ignoriert
+	predicate=$(./get_without_stopwords.py "$predicate" | cut -f1 -d\ )
+fi
+
+infinitive=$(./get_infinitive.py "$predicate")
+sed "2s/.*/$infinitive/" $resultfile > tmpfile
+rm $resultfile
+mv tmpfile $resultfile
