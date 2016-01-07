@@ -27,9 +27,7 @@ cd ..
 
 
 if [[ -z "$(cat $resultfile)" ]]; then
-	echo "No Open IE Extraction"
-	#Keine Extraktionen ...
-
+	printf "\tVersuch Extraktion mit Stanford Parser\n" >> pipeline_log.md
 	#Dollarzeichen der Annotationen von Possesivprononmen entfernen mit sed
 	lexparser.sh "$qfile" 2> /dev/null | sed -E 's/\$//g' > result.txt
 
@@ -78,10 +76,21 @@ if [[ -z "$(cat $resultfile)" ]]; then
 	fi
 
 
+	printf "\ttmp_relation.txt:\n" >> pipeline_log.md
+	awk '{printf "\t"$0"\n";}' tmp_relation.txt >> pipeline_log.md
+	printf "\n\tresult.txt:\n" >> pipeline_log.md
+	awk '{printf "\t"$0"\n";}' result.txt >> pipeline_log.md
+
 	if [[ -z "$(cat $resultfile)" ]]; then
+		printf "\tKeine Extraktion möglich\n" >> pipeline_log.md
 		exit 1
-	elif [ $debug -eq 0 ]; then
-		rm tmp_relation.txt
-		rm result.txt
+	else
+	printf "\tExtraktion mit Stanford Parser erfolgreich\n" >> pipeline_log.md
 	fi
+
+
+	rm tmp_relation.txt
+	rm result.txt
+else
+	printf "\tExtraktion mit Stanford Open IE erfolgreich\n" >> pipeline_log.md
 fi
