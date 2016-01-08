@@ -5,7 +5,7 @@ db="relations.db"
 corpus="corpora/CloudComputing.txt"
 question_relation_file="question_relation.txt"
 
-if [[ -f pipeline_log.md ]]; then
+if [[ ! -f pipeline_log.md ]]; then
 	printf "# Pipeline Log\n\n## Inhalt\n\n## Ausführungen" > pipeline_log.md
 fi
 
@@ -39,7 +39,9 @@ if [[ $1 == "dbready" ]]; then
 else
 	if [ $debug -eq 1 ]; then
 		echo "Construct database ..."
+
 	fi
+	printf "parallel: Beginne process_corpus.sh\n\n" >> pipeline_log.md
 
 	./process_corpus.sh "$corpus" $db &
 fi	
@@ -87,7 +89,7 @@ qasystem(){
 	if [[ $(wc -l $question_relation_file | xargs | cut -f1 -d\ ) -gt 3 ]]; then
 		echo "Internal error 2"
 		if [ $debug -eq 1 ]; then
-			printf "\t\$question_relation_file hat mehr als drei Zeilen ... Abbruch dieser Frage\n----\n" >> pipeline_log.md
+			printf "\t\$question_relation_file hat mehr als drei Zeilen ... Abbruch dieser Frage\n\n----\n" >> pipeline_log.md
 		fi
 		return
 	fi
@@ -102,7 +104,9 @@ qasystem(){
 		process_corpus_result=$?
 		if [ $process_corpus_result -eq 1 ]; then
 			echo "I could not find the document. I must terminate this session, sorry."
-			printf "\tprocess_corpus hat den Korpus nicht gefunden ... Abbruch komplett\n----\n" >> pipeline_log.md
+			exit
+		elif [[ $process_corpus_result -eq 2 ]]; then
+			echo "There are errors in the document. I must stop, sorry."
 			exit
 		fi
 	fi
@@ -111,16 +115,17 @@ qasystem(){
 	awk '{printf "\t"$0"\n";}' $question_relation_file >> pipeline_log.md
 
 	tables=$(./get_matching_table_names.py $db "$question_verb" "$syns")
-	printf "\tgefundene Tabellen: $tables\n" >> pipeline_log.md
+	printf "\n\tgefundene Tabellen: $tables\n" >> pipeline_log.md
 
 	if [ ! -z "$tables" ]; then
-		answers=$(./print_matches_in_tables.py $db $question_relation_file "$tables")
+		answers=$(./print_matches_in_tables.py $db $question_relation_file "$tables" | sed 's/_/ /g')
 		if [ -z "$answers" ]; then
 			echo "Unfortunately I can't find information about your question."	
 			printf "\tkeine Antwort gefunden\n\n" >> pipeline_log.md
 		else
 			echo "$answers"
-			printf "\n\ngefundene Antworten: $answers\n\n" >> pipeline_log.md
+			answers_formatted=$(printf "\n$answers" | tr '\n' '#' | sed -E $'s/#/\\\n- /g')
+			printf "\n\ngefundene Antworten:\n$answers_formatted\n\n" >> pipeline_log.md
 		fi
 	else
 		echo "Sorry, I don't know the answer."
