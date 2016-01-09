@@ -3,13 +3,14 @@
 db="relations.db"
 corpus="corpora/CloudComputing.txt"
 question_relation_file="question_relation.txt"
+answer_file="answers.txt"
 
 if [[ ! -f pipeline_log.md ]]; then
-	printf "# Pipeline Log\n\n## Inhalt\n\n## Ausführungen" > pipeline_log.md
+	cp new_pipeline_log.md pipeline_log.md
 fi
 
 lastcommit=$(git rev-parse HEAD)
-printf "\n\n### $(date +"%Y-%m-%d %H:%M") - Version ${lastcommit:0:6}\n" >> pipeline_log.md
+printf "\n\n### $(date +"%Y-%m-%d %H:%M") - ${lastcommit:0:6}\n" >> pipeline_log.md
 
 
 
@@ -124,12 +125,23 @@ qasystem(){
 	printf "\n\tgefundene Tabellen: $tables\n" >> pipeline_log.md
 
 	if [ ! -z "$tables" ]; then
-		answers=$(./print_matches_in_tables.py $db $question_relation_file "$tables" | sed 's/_/ /g')
-		if [ -z "$answers" ]; then
+		./print_matches_in_tables.py $db $question_relation_file "$tables" $answer_file
+		result_print_matches_in_tables=$?
+
+		if [ $result_print_matches_in_tables -eq 4 ]; then
+			echo "Please be more specific. Your question was too vague."	
+			return
+		elif [ $result_print_matches_in_tables -ne 0 ]; then
+			printf "\tFehler in print_matches_in_tables ... (Rückgabewert war $result_print_matches_in_tables)\n" >> pipeline_log.md
+		fi
+
+		if [[ -z "$(cat $answer_file)" ]]; then
 			echo "Unfortunately I can't find information about your question."	
 			printf "\tkeine Antwort gefunden\n\n" >> pipeline_log.md
 		else
-			echo "$answers"
+			sed -i 's/_/ /g' $answer_file
+			answers=$(cat $answer_file)
+			echo $answers
 			answers_formatted=$(printf "\n$answers" | tr '\n' '#' | sed -E $'s/#/\\\n- /g')
 			printf "\n\ngefundene Antworten:\n$answers_formatted\n\n" >> pipeline_log.md
 		fi

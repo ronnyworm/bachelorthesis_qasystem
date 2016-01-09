@@ -29,9 +29,9 @@ rm $reverbout.txt
 
 
 ./relation_extract.py $reverbout.csv $db
-relation_extract_result=$?
+result_relation_extract=$?
 
-if [ $relation_extract_result -ne 0 ]; then
+if [ $result_relation_extract -ne 0 ]; then
 	printf "parallel: relation_extract einen Fehler verursacht ... Abbruch komplett, sobald Frage verarbeitet wurde\n\n----\n" >> pipeline_log.md
 
 	exit 2

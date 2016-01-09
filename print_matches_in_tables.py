@@ -18,10 +18,15 @@ def warning(*objs):
 def scrub(table_name):
 	return ''.join( chr for chr in table_name if chr.isalnum() or chr == '_' or chr == ' ' )
 
-if len(sys.argv) < 4:
+def log(s):
+	with open ("pipeline_log.md", "a") as f:
+		f.write("\t" + s + "\n")
+
+if len(sys.argv) < 5:
 	warning("Als erster Parameter muss der Name der SQLite-Datenbank übergeben werden.")
 	warning("Als zweiter Parameter muss der Dateiname der Datei mit der normalisierten Frage übergeben werden.")
 	warning("Als dritter Parameter müssen die Tabellen übergeben werden, in denen nach der Antwort gesucht werden soll (mit Komma und Leerzeichen voneinander getrennt.)")
+	warning("Als vierter Parameter muss der Dateiname übergeben werden, in den die Antworten gespeichert werden sollen.")	
 	warning("Das hier wurde übergeben: " + str(sys.argv) + " (" + str(len(sys.argv)) + ")")
 	sys.exit(1)
 
@@ -40,26 +45,29 @@ if not os.path.isfile(qfilename):
 	print("Die Datei %s existiert nicht" % dbname)
 	sys.exit(3)
 
-if debug:
-	print("qf: " + qfilename)
-
 tables = sys.argv[3].split(", ")
 
-if debug:
-	print("tables: " + str(tables))
+answer_file = sys.argv[4]
+
+
+
 
 # subject und object aus Fragefile holen
 f = open(qfilename, 'r')
-subj = nltk.word_tokenize(f.readline().strip())
+subj = nltk.word_tokenize(f.readline().lower().strip())
 subj = [word for word in subj if word not in stopwords.words('english')]
-f.readline()
-obj = nltk.word_tokenize(f.readline().strip())
+predicate = f.readline().strip()
+obj = nltk.word_tokenize(f.readline().lower().strip())
 obj = [word for word in obj if word not in stopwords.words('english')]
+f.close()
 
 relevant_in_question = []
 relevant_in_question += subj + obj
 with_synonyms = []
 with_synonyms += list(relevant_in_question)
+
+
+
 
 # Synonyme finden
 scriptpath = os.path.dirname(os.path.abspath(__file__))
@@ -69,31 +77,53 @@ for word in relevant_in_question:
 		res = check_output(["./get_synonyms.py", word, "n"]).strip().replace("_", " ").split(", ")
 		if res != ['']:
 			with_synonyms += res
+
+	# Hier wird ignoriert, wenn get_synonyms für ein Wort einen Fehler auslöst. Das wird gewertet als "kein Synonym gefunden"
 	except Exception, e:
 		pass
 
+log("Synonyme für Subjekt und Objekt: " + str(with_synonyms))
+if len(with_synonyms) == 0:
+	log("Nach Entfernung der Stoppwörter ist nichts mehr übrig geblieben. Dann kann auch nicht gesucht werden. Frage zu ungenau.")
+	sys.exit(4)
+
+
+# Übereinstimmungen in der Datenbank suchen
 conn = sqlite3.connect(dbname)
 c = conn.cursor()
 
-answer_sents = []
+answer_sents_predicates = []
+answer_sents_relation_nouns = []
 
 for table in tables:
 	for syn in with_synonyms:
 		if debug:
 			print("q: " + 'SELECT * FROM ' + scrub(table) + ' WHERE subject like "%' + scrub(syn) + '%" or object like "%' + scrub(syn) + '%"')
 		for row in c.execute('SELECT * FROM ' + scrub(table) + ' WHERE subject like "%' + scrub(syn) + '%" or object like "%' + scrub(syn) + '%"'):
-
+			# Ersten Buchstaben groß schreiben
 			first = row[0][:1].upper() + row[0][1:]
 
 			if table.endswith("_by"):
 				v = en.verb.past_participle(table.split("_")[0])
-				answer_sents += [ "%s is %s by %s." % (first, v, row[1]) ]
+				answer_sents_predicates += [ "%s is %s by %s." % (first, v, row[1]) ]
 			else:
-				answer_sents += [ "%s %ss %s." % (first, table, row[1]) ]
+				answer_sents_predicates += [ "%s %ss %s." % (first, table, row[1]) ]
+match_count = len(set(answer_sents_predicates))
+log("Anzahl Funde in Prädikattabellen: " + str(match_count))
+
+
+if match_count < 3 and (predicate == "do" or predicate == "be"):
+	for syn in with_synonyms:
+		for row in c.execute('SELECT * FROM relation_nouns WHERE noun like "%' + scrub(syn) + '%"'):
+			first = row[1][:1].upper() + row[1][1:]
+			answer_sents_relation_nouns += [ first ]
+	log("Anzahl Funde in relation_nouns-Tabelle: " + str(len(set(answer_sents_relation_nouns))))
 
 conn.close()
 
+answer_sents = answer_sents_predicates + answer_sents_relation_nouns
 answer_sents = set(answer_sents)
 
-for s in answer_sents:
-	print(s)
+with open (answer_file, "w") as f:
+	for s in answer_sents:
+		f.write(s + "\n")
