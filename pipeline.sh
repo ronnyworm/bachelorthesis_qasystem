@@ -1,6 +1,5 @@
 #!/bin/bash
 
-debug=0
 db="relations.db"
 corpus="corpora/CloudComputing.txt"
 question_relation_file="question_relation.txt"
@@ -9,13 +8,10 @@ if [[ ! -f pipeline_log.md ]]; then
 	printf "# Pipeline Log\n\n## Inhalt\n\n## Ausführungen" > pipeline_log.md
 fi
 
-printf "\n\n### $(date +"%Y-%m-%d %H:%M")\n" >> pipeline_log.md
+lastcommit=$(git rev-parse HEAD)
+printf "\n\n### $(date +"%Y-%m-%d %H:%M") - Version ${lastcommit:0:6}\n" >> pipeline_log.md
 
-#q="Is he one of a kind?"
-#q="Is it true that he built this house?" -> ein Ergebnis bei den Tabellen
-#q="Where has he found the truth?"	# -> drei Ergebnisse bei den Tabellen
-#q="Did he ever find the error?" # -> gesamte pipeline
-#q="How many tables are in this room?" # -> keine Tabellen
+
 
 
 # Parameterhandling
@@ -33,14 +29,8 @@ fi
 
 
 if [[ $1 == "dbready" ]]; then
-	if [ $debug -eq 1 ]; then
-		echo "Database already constructed."
-	fi
+	printf "Datenbank wird aufgrund der Übergabe des Parameters dbready nicht neu erstellt.\n\n" >> pipeline_log.md
 else
-	if [ $debug -eq 1 ]; then
-		echo "Construct database ..."
-
-	fi
 	printf "parallel: Beginne process_corpus.sh\n\n" >> pipeline_log.md
 
 	./process_corpus.sh "$corpus" $db &
@@ -66,10 +56,15 @@ qasystem(){
 	qfile="question.txt"
 	echo "$q" > $qfile
 
-	./process_question.sh $qfile $question_relation_file
-	result_process_question=$?
 
-	if [ $result_process_question -eq 1 ]; then
+
+
+
+
+	./process_question_reverb.sh $qfile $question_relation_file
+	result_process_question_reverb=$?
+
+	if [ $result_process_question_reverb -eq 1 ]; then
 		./process_question_stanford.sh $qfile $question_relation_file
 		result_process_question_stanford=$?
 
@@ -77,7 +72,7 @@ qasystem(){
 			echo "I do not understand your question, sorry."
 			return
 		fi
-	elif [ $result_process_question -eq 2 ]; then
+	elif [ $result_process_question_reverb -eq 2 ]; then
 		echo "Internal Error 1"
 		exit
 	else
@@ -86,17 +81,26 @@ qasystem(){
 
 	rm question.txt
 
+	printf "\n\t$question_relation_file:\n" >> pipeline_log.md
+	awk '{printf "\t"$0"\n";}' $question_relation_file >> pipeline_log.md
+
 	if [[ $(wc -l $question_relation_file | xargs | cut -f1 -d\ ) -gt 3 ]]; then
 		echo "Internal error 2"
-		if [ $debug -eq 1 ]; then
-			printf "\t\$question_relation_file hat mehr als drei Zeilen ... Abbruch dieser Frage\n\n----\n" >> pipeline_log.md
-		fi
+		printf "\t\$question_relation_file hat mehr als drei Zeilen ... Abbruch dieser Frage\n\n----\n" >> pipeline_log.md
 		return
 	fi
 
+
+
+
+
 	question_verb="$(awk 'NR == 2' $question_relation_file)"
 	syns=$(./get_synonyms.py "$question_verb" v 2)
-	printf "\tgefundene Synonyme zum question verb ($question_verb): $syns\n" >> pipeline_log.md
+	printf "\n\tgefundene Synonyme zum question verb ($question_verb): $syns\n" >> pipeline_log.md
+
+
+
+
 
 	# Warte auf process_corpus
 	if [[ $1 != "dbready" ]]; then
@@ -111,8 +115,10 @@ qasystem(){
 		fi
 	fi
 
-	printf "\n\t$question_relation_file:\n" >> pipeline_log.md
-	awk '{printf "\t"$0"\n";}' $question_relation_file >> pipeline_log.md
+
+
+
+
 
 	tables=$(./get_matching_table_names.py $db "$question_verb" "$syns")
 	printf "\n\tgefundene Tabellen: $tables\n" >> pipeline_log.md

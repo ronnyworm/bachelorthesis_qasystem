@@ -1,7 +1,5 @@
 #!/bin/bash
 
-debug=0
-
 
 if [ $# -eq 0 ]; then
     cat << EOF
@@ -15,21 +13,15 @@ qfile="$1"
 resultfile="$2"
 
 if [ ! -f "$qfile" ]; then
-	>&2 echo "Das Dokument $qfile existiert nicht!"
+	printf "\tin process_question_reverb: Eigentlich unmöglich: Das Dokument $qfile existiert nicht!\n" >> pipeline_log.md
+
 	exit 2
 fi
 
-if [ $debug -eq 1 ]; then
-	echo "Process question ..."
-fi
 java -Xmx512m -jar ReVerb/reverb-latest.jar "$qfile" 2> /dev/null | awk -v FS="\t" '{printf("%s\n%s\n%s\n", $16, $17, $18)}' > "$resultfile"
 
-
+# Hat ReVerb etwas extrahieren können?
 if [[ -z "$(cat $resultfile)" ]]; then
+	# nein ...
 	exit 1
-else
-	if [ $debug -eq 1 ]; then
-		cat "$resultfile"
-	fi
-	exit 0
 fi
