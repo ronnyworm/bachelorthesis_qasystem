@@ -1,13 +1,13 @@
-_re How many buckets does it take to fill the sea?
-_re We never started the war?
-_re Do I really need ten questions?
-_re Can china survive its crisis?
-_re Did you ever think about a complex question?
-_re Have you ever imagined a world without war?
-_re Why should I use cloud computing?
-_re How can I program a natural language processing application?
-_re Do questions always have to be of such a complex nature to not be understood by the system?
-_re How can I break this system again without spending the rest of my life on it?
+How many buckets does it take to fill the sea?
+We never started the war?
+Do I really need ten questions?
+Can china survive its crisis?
+Did you ever think about a complex question?
+Have you ever imagined a world without war?
+Why should I use cloud computing?
+How can I program a natural language processing application?
+Do questions always have to be of such a complex nature to not be understood by the system?
+How can I break this system again without spending the rest of my life on it?
 Are you sure that Cloud Computing is possible?
 When was HP founded?
 What do you expect from an operating system made by graduate students?
@@ -38,3 +38,6 @@ Why do plants grow?
 Why does the sun shine?
 Why do people drink?
 What material is this chair built of?
+
+_What the
+_Ganz normal?

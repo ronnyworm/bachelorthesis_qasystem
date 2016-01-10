@@ -22,6 +22,7 @@ Frage-Antwort-System - Prototyp
 
 Als erster Parameter kann dbready übergeben werden, wenn die Datenbank bereits erzeugt wurde, ansonsten wird sie neu erstellt.
 Als zweiter Parameter kann eine erste Frage übergeben werden, ansonsten wird die erste Frage zur Laufzeit aufgenommen.
+Es kann aber auch eine Datei mit durch Zeilenumbrüche getrennte Fragen als zweiter Parameter übergeben werden.
 Als dritter Parameter kann justonce übergeben werden, damit nur eine einzige Frage bearbeitet wird.
 
 EOF
@@ -52,7 +53,27 @@ qasystem(){
 		q="$2"
 	fi
 
-	printf "q: $q ($(date +"%H:%M"))\n\n" >> pipeline_log.md
+	if [[ -f "$q" ]]; then
+		return 1
+	else
+		printf "q: $q ($(date +"%H:%M:%S"))\n\n" >> pipeline_log.md
+
+
+		last_index=${#q} && last_index=$(($last_index-1))
+		last=${q:$last_index}
+		number_of_question_marks=$(grep -o "?" <<< "$q" | wc -l | xargs)
+
+		if [[ $last != "?" || $number_of_question_marks -eq 0 ]]; then
+			echo "Please pose one question only."
+			printf "\tlast($last) != ? || number_of_question_marks($number_of_question_marks) -eq 0\n\n" >> pipeline_log.md
+			return
+		elif [[ $number_of_question_marks -gt 1 ]]; then
+			echo "Please pose only one question at a time."
+			printf "\tnumber_of_question_marks($number_of_question_marks) -gt 1\n\n" >> pipeline_log.md
+			return
+		fi
+	fi
+
 
 	qfile="question.txt"
 	echo "$q" > $qfile
@@ -105,7 +126,7 @@ qasystem(){
 
 	# Warte auf process_corpus
 	if [[ $1 != "dbready" ]]; then
-		wait %1
+		wait %1 2> /dev/null
 		process_corpus_result=$?
 		if [ $process_corpus_result -eq 1 ]; then
 			echo "I could not find the document. I must terminate this session, sorry."
@@ -139,8 +160,11 @@ qasystem(){
 			echo "Unfortunately I can't find information about your question."	
 			printf "\tkeine Antwort gefunden\n\n" >> pipeline_log.md
 		else
-			sed -i 's/_/ /g' $answer_file
+			sed 's/_/ /g' $answer_file > tmp
+			rm $answer_file
+			mv tmp $answer_file
 			answers=$(cat $answer_file)
+			rm $answer_file
 			echo $answers
 			answers_formatted=$(printf "\n$answers" | tr '\n' '#' | sed -E $'s/#/\\\n- /g')
 			printf "\n\ngefundene Antworten:\n$answers_formatted\n\n" >> pipeline_log.md
@@ -152,8 +176,22 @@ qasystem(){
 
 
 qasystem "$@"
-if [ -z "$justonce" ]; then
+result=$?
+
+if [[ $result -eq 1 ]]; then
+	all_questions_file="$2"
+	dbready="$1"
+
+	printf "\n\n**Start einer Batchverarbeitung mit Datei:** <code>$all_questions_file</code>\n\n" >> pipeline_log.md
+
+
+	while read line; do
+		if [[ "$line" != _* && $line != "" ]]; then
+			qasystem egal "$line"
+		fi
+	done <"$all_questions_file"
+elif [ -z "$justonce" ]; then
 	while [ 1 ]; do
-	   qasystem
+		qasystem
 	done
 fi
