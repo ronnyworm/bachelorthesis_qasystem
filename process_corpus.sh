@@ -15,7 +15,7 @@ corpus="$1"
 db="$2"
 
 if [ ! -f "$corpus" ]; then
-	printf "\tprocess_corpus hat den Korpus $corpus nicht gefunden ... Abbruch komplett\n\n----\n" >> pipeline_log.md
+	printf "\tprocess_corpus hat den Korpus $corpus nicht gefunden ... Abbruch komplett\n\n" >> pipeline_log.md
 
 	exit 1
 fi

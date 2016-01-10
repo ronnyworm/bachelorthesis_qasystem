@@ -7,12 +7,17 @@ if [ $# -eq 0 ]; then
 	cat << EOF
 Frage-Antwort-System - Prototyp
 
-Als erster Parameter kann dbready übergeben werden, wenn die Datenbank bereits erzeugt wurde, ansonsten wird sie neu erstellt.
-Als zweiter Parameter kann eine erste Frage übergeben werden, ansonsten wird die erste Frage zur Laufzeit aufgenommen.
-Es kann aber auch eine Datei mit durch Zeilenumbrüche getrennte Fragen als zweiter Parameter übergeben werden.
-Als dritter Parameter kann justonce übergeben werden, damit nur eine einzige Frage bearbeitet wird.
+Als erster Parameter wird das Textdokument übergeben, in dem nach Antworten gesucht wird (Korpus).
+Als zweiter Parameter kann eine Datei mit Fragen übergeben werden, die durch Zeilenumbrüche getrennt sind.
+  Ansonsten muss als zweiter Parameter stdin übergeben werden.
+
+Als dritter Parameter kann ein Text übergeben werden.
+- Wenn er das Wort dbready enthält, wird die Datenbank nicht neu erstellt
+- Wenn er das Wort justonce enthält, wird nur eine Frage verarbeitet.
 
 EOF
+
+	exit
 fi
 
 log(){
@@ -33,9 +38,8 @@ log(){
 
 
 
-# Variablen und Start
+# Variablen
 db="relations.db"
-corpus="corpora/CloudComputing.txt"
 question_relation_file="question_relation.txt"
 answer_file="answers.txt"
 
@@ -48,16 +52,25 @@ log "\n\n### $(date +"%Y-%m-%d %H:%M") - ${lastcommit:0:6}\n"
 
 
 
-if [[ $1 == "dbready" ]]; then
-	log "Datenbank wird aufgrund der Übergabe des Parameters dbready nicht neu erstellt.\n\n"
+
+# Verarbeitung Parameter
+corpus="$1"
+if [ ! -f "$corpus" ]; then
+	log "Dokument $corpus nicht gefunden ... Abbruch komplett\n\n"
+	log "I could not find the document. I must terminate this session, sorry." "with_echo no_tab"
+
+	exit 1
+fi
+
+if [[ $3 == *dbready* ]]; then
+	log "Datenbank wird aufgrund der Übergabe von dbready nicht neu erstellt.\n\n"
 else
 	log "parallel: Beginne process_corpus.sh\n\n"
 
 	./process_corpus.sh "$corpus" $db &
 fi	
 
-
-if [[ $3 == "justonce" ]]; then
+if [[ $3 == *justonce* ]]; then
 	justonce="true"
 fi	
 
@@ -65,15 +78,19 @@ fi
 
 
 qasystem(){
-	if [[ $# -lt 2 || -z "$2" ]]; then
-	    echo -n "Ask a question about the document(s) in '$corpus': "
-	    read q
+	if [[ "$1" != "auto_mode" ]]; then
+		if [[ "$2" == "stdin" ]]; then
+		    echo -n "Ask a question about the document(s) in '$corpus': "
+		    read q
+		elif [[ -f "$2" ]]; then
+			return 1
+		else
+			log "Als zweiter Paramter muss stdin oder eine existierende Datei übergeben werden. Das wurde übergeben: $2 ... Abbruch komplett\n\n"
+			log "You didn't pose a question. I must terminate this session, sorry." "with_echo no_tab"
+			exit
+		fi
 	else
 		q="$2"
-	fi
-
-	if [[ -f "$q" ]]; then
-		return 1
 	fi
 
 	log "\n<span class='big'>q: $q ($(date +"%H:%M:%S"))</span>\n\n"
@@ -110,7 +127,7 @@ qasystem(){
 		fi
 	elif [ $result_process_question_reverb -eq 2 ]; then
 		log "Internal Error 1" with_echo
-		exit
+		exit 2
 	else
 		log "\tExtraktion mit ReVerb erfolgreich\n"
 	fi
@@ -151,10 +168,10 @@ qasystem(){
 		process_corpus_result=$?
 		if [ $process_corpus_result -eq 1 ]; then
 			log "I could not find the document. I must terminate this session, sorry." "with_echo no_tab"
-			exit
+			exit 3
 		elif [[ $process_corpus_result -eq 2 ]]; then
 			log "There are errors in the document. I must stop, sorry." "with_echo no_tab"
-			exit
+			exit 4
 		fi
 	fi
 
@@ -208,7 +225,6 @@ result=$?
 
 if [[ $result -eq 1 ]]; then
 	all_questions_file="$2"
-	dbready="$1"
 
 	log "\n\n**Start einer Batchverarbeitung mit Datei:** <code>$all_questions_file</code>\n\n"
 
@@ -217,11 +233,11 @@ if [[ $result -eq 1 ]]; then
 
 	while read line; do
 		if [[ "$line" != _* && $line != "" ]]; then
-			qasystem egal "$line"
+			qasystem auto_mode "$line"
 		fi
 	done <"$all_questions_file"
 elif [ -z "$justonce" ]; then
 	while [ 1 ]; do
-		qasystem
+		qasystem normal_mode stdin
 	done
 fi
