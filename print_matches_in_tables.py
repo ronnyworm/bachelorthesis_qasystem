@@ -84,7 +84,7 @@ for word in relevant_in_question:
 
 log("Synonyme für Subjekt und Objekt: " + str(with_synonyms))
 if len(with_synonyms) == 0:
-	log("Nach Entfernung der Stoppwörter ist nichts mehr übrig geblieben. Dann kann auch nicht gesucht werden. Frage zu ungenau.")
+	log("Nach Entfernung der Stoppwörter ist nichts mehr übrig geblieben - keine Suche möglich - Frage zu ungenau.")
 	sys.exit(4)
 
 
@@ -118,6 +118,9 @@ if match_count < 3 and (predicate == "do" or predicate == "be"):
 			first = row[1][:1].upper() + row[1][1:]
 			answer_sents_relation_nouns += [ first ]
 	log("Anzahl Funde in relation_nouns-Tabelle: " + str(len(set(answer_sents_relation_nouns))))
+else:
+	log("Keine Suche in relation_nouns, weil match_count >= 3 or (predicate != do and predicate != be)")
+
 
 conn.close()
 
