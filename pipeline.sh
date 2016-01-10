@@ -1,8 +1,6 @@
 #!/bin/bash
 
-
-
-# Parameterhandling
+# Erklärung Benutzung
 if [ $# -eq 0 ]; then
 	cat << EOF
 Frage-Antwort-System - Prototyp
@@ -20,6 +18,7 @@ EOF
 	exit
 fi
 
+# Funktion für Logdatei
 log(){
 	s="$1"
 	if [[ "$2" == *with_echo* ]]; then
@@ -38,7 +37,7 @@ log(){
 
 
 
-# Variablen
+# Globale Variablen
 db="relations.db"
 question_relation_file="question_relation.txt"
 answer_file="answers.txt"
@@ -78,6 +77,7 @@ fi
 
 
 qasystem(){
+	# Parameter verarbeiten
 	if [[ "$1" != "auto_mode" ]]; then
 		if [[ "$2" == "stdin" ]]; then
 		    echo -n "Ask a question about the document(s) in '$corpus': "
@@ -96,6 +96,8 @@ qasystem(){
 	log "\n<span class='big'>q: $q ($(date +"%H:%M:%S"))</span>\n\n"
 
 
+
+	# Frage auf Plausibilität prüfen
 	last_index=${#q} && last_index=$(($last_index-1))
 	last=${q:$last_index}
 	number_of_question_marks=$(grep -o "?" <<< "$q" | wc -l | xargs)
@@ -111,6 +113,7 @@ qasystem(){
 	fi
 
 
+	# Frage verarbeiten
 	qfile="question.txt"
 	echo "$q" > $qfile
 
@@ -145,7 +148,7 @@ qasystem(){
 
 
 
-
+	# Synonyme für Prädikat finden
 	predicate_synonyms_file="predicate_synonyms.txt"
 	question_verb="$(awk 'NR == 2' $question_relation_file)"
 	./get_synonyms.py "$question_verb" $predicate_synonyms_file v 2
@@ -158,7 +161,6 @@ qasystem(){
 	else
 		log "\n\tget_synonyms Fehler $result_get_synonyms: NLTK kennt $question_verb nicht als Verb. Wahrscheinlich keine Tabellen auffindbar\n"
 	fi
-
 
 
 
@@ -177,9 +179,7 @@ qasystem(){
 
 
 
-
-
-
+	# Passende Tabellen finden
 	tables=$(./get_matching_table_names.py $db "$question_verb" "$syns")
 	log "\n\tgefundene Tabellen: $tables\n\n"
 
@@ -189,6 +189,8 @@ qasystem(){
 	fi
 
 
+
+	# Antworten extrahieren und ausgeben
 	./print_matches_in_tables.py $db $question_relation_file "$tables" $answer_file
 	result_print_matches_in_tables=$?
 
@@ -217,8 +219,7 @@ qasystem(){
 
 
 
-
-
+# Main Loop
 
 qasystem "$@"
 result=$?

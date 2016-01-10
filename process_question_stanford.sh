@@ -95,13 +95,23 @@ else
 fi
 
 
-predicate=$(awk 'NR==2' $resultfile)
-word_count=$(echo $predicate | wc -w | xargs)
+original_predicate=$(awk 'NR==2' $resultfile)
+word_count=$(echo $original_predicate | wc -w | xargs)
 
+# Wenn das Prädikat aus mehr als zwei Wörtern besteht, werden die Stoppwörter entfernt
 if [[ $word_count -gt 1 ]]; then
 	# Falls ein zweites Nicht-Stoppwort herauskommt, oder noch mehr, werden diese ignoriert
-	predicate=$(./get_without_stopwords.py "$predicate" | cut -f1 -d\ )
+	predicate=$(./get_without_stopwords.py "$original_predicate" | cut -f1 -d\ )
+
+	# Wenn dann nichts mehr übrig bleibt, wird das erste Wort aus dem originalen Prädikat genommen 
+	if [[ -z "$predicate" ]]; then
+		predicate=$(echo $original_predicate | sed 's/ .*//g')
+	fi
+else
+	predicate="$original_predicate"
 fi
+
+
 
 infinitive=$(./get_infinitive.py "$predicate")
 sed "2s/.*/$infinitive/" $resultfile > tmpfile

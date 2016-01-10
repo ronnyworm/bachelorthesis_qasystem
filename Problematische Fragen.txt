@@ -1,7 +1,0 @@
-How many buckets does it take to fill the sea?
-
-When can I expect AL_INVALID_VALUE?
-
-no processing:
-When was HP founded?
-When is AL_INVALID_VALUE emitted?

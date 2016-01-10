@@ -1,0 +1,29 @@
+WHY SEARCH ENGINE MARKETING IS NECESSARY
+
+Search Engine Optimization is the process of taking a page built by humans and making it easily consumable for both other humans and for search engine robots. This section details some of the compromises you will need to make in order to satisfy these two very important kinds of user.
+One of the most common issues we hear from folks on both the business and technology sides of a company goes something like this:
+“No smart engineer would ever build a search engine that requires websites to follow certain rules or principles in order to be ranked or indexed. Anyone with half a brain would want a system that can crawl through any architecture, parse any amount of complex or imperfect code and still find a way to return the best and most relevant results, not the ones that have been "optimized" by unlicensed search marketing experts.”
+
+Sounds Brutal...
+Initially, this argument can seem like a tough obstacle to overcome, but the more you're able to explain details and examine the inner-workings of the engines, the less powerful this argument becomes. 
+
+Limitations of Search Engine Technology
+1. Spidering and Indexing Problems
+The major search engines all operate on the same principles, as explained in Chapter 1. Automated search bots crawl the web, following links and indexing content in massive databases. But, modern search technology is not all-powerful. There are technical limitations of all kinds that can cause immense problems in both inclusion and rankings. We've enumerated some of the most common of these below:
+•	Search engines cannot fill out online forms, and thus any content contained behind them will remain hidden.
+•	Poor link structures can lead to search engines failing to reach all of the content contained on a website, or allow them to spider it, but leave it so minimally exposed that it's deemed "unimportant" by the engines' index. 
+•	Web pages that use Flash, frames, Java applets, plug-in content, audio files & video have content that search engines cannot access. 
+•	Interpreting Non-Text Content: Text that is not in HTML format in the parse-able code of a web page is inherently invisible to search engines. This can include text in Flash files, images, photos, video, audio & plug-in content. 
+
+
+2. Content to Query Matching
+•	Text that is not written in terms that users use to search in the major search engines: For example, writing about refrigerators when people actually search for "fridges". We had a client once who used the phrase "Climate Connections" to refer to Global Warming.
+•	Language and internationalization subtleties. For example, color vs colour. When in doubt, check what people are searching for and use exact matches in your content.
+•	Language. For example, writing content in Polish when the majority of the people who would visit your website are from Japan.
+
+ 3. The “Tree Falls in a Forest” Effect
+This is perhaps the most important concept to grasp about the functionality of search engines & the importance of search marketers. Even when the technical details of search-engine friendly web development are correct, content can remain virtually invisible to search engines. This is due to the inherent nature of modern search technology, which relies on the aforementioned metrics of relevance and importance to display results.
+The "tree falls in a forest" adage postulates that if no one is around to hear the sound, it may not exist at all - and this translates perfectly to search engines and web content. The major engines have no inherent gauge of quality or notability and no potential way to discover and make visible fantastic pieces of writing, art or multimedia on the web. Only humans have this power - to discover, react, comment and (most important for search engines) link. Thus, it is only natural that great content cannot simply be created - it must be marketed. Search engines already do a great job of promoting high quality content on popular websites or on individual web pages that have become popular, but they cannot generate this popularity - this is a task that demands talented Internet marketers. 
+…
+When search marketing began in the mid-1990's, manual submission, the meta keywords tag and keyword stuffing were all regular parts of the tactics necessary to rank well. In 2004, link bombing with anchor text, buying hordes of links from automated blog comment spam injectors and the construction of inter-linking farms of websites could all be leveraged for traffic. In 2010, social media marketing and vertical search inclusion are mainstream methods for conducting search engine optimization.
+The future may be uncertain, but in the world of search, change is a constant. For this reason, along with all the many others listed above, search marketing will remain a steadfast need in the diet of those who wish to remain competitive on the web. Others have mounted an effective defense of search engine optimization in the past, but as we see it, there's no need for a defense other than simple logic - websites and pages compete for attention and placement in the search engines, and those with the best knowledge and experience with these rankings will receive the benefits of increased traffic and visibility.
