@@ -18,7 +18,7 @@ if [ ! -f "$qfile" ]; then
 	exit 2
 fi
 
-java -Xmx512m -jar ReVerb/reverb-latest.jar "$qfile" 2> /dev/null | awk -v FS="\t" '{printf("%s\n%s\n%s\n", $16, $17, $18)}' > "$resultfile"
+java -Xmx512m -jar ReVerb/reverb-latest.jar "$qfile" 2> /dev/null | awk -v FS="\t" '{printf("%s\n%s\n%s\n", $16, $17, $18)}' | sed 's/#//g' > "$resultfile"
 
 # Hat ReVerb etwas extrahieren können?
 if [[ -z "$(cat $resultfile)" ]]; then

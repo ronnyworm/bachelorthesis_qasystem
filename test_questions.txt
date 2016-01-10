@@ -1,22 +1,4 @@
-How many buckets does it take to fill the sea?
-We never started the war?
-Do I really need ten questions?
-Can china survive its crisis?
-Did you ever think about a complex question?
-Have you ever imagined a world without war?
 Why should I use cloud computing?
-How can I program a natural language processing application?
-Do questions always have to be of such a complex nature to not be understood by the system?
-How can I break this system again without spending the rest of my life on it?
-Are you sure that Cloud Computing is possible?
-When was HP founded?
-What do you expect from an operating system made by graduate students?
-What do you know about calculations?
-How can he push the weight?
-It never resulted in pain?
-Where is the next supermarket?
-Is it true?
-What is a newspaper article?
 What web browsers are mentioned in the article?
 Have you heard about private eyes?
 What concerns are important regarding cloud computing?
@@ -24,20 +6,5 @@ How will cloud computing affect other industries?
 How does cloud computing work?
 What is now well on its way to becoming a household term?
 Who is who in cloud computing?
-What colour do your eyes have?
-What question breaks the system?
-Is it good enough yet?
-What text should I read?
-Will it ever work?
-Who am I?
-What do I do?
-Why does it always fail?
-How can this be?
-What is a computer?
-Why do plants grow?
-Why does the sun shine?
-Why do people drink?
-What material is this chair built of?
-
-_What the
-_Ganz normal?
+How does the cloud computing architecture look like?
+How can corporations save money?

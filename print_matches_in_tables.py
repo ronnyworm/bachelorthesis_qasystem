@@ -74,7 +74,7 @@ scriptpath = os.path.dirname(os.path.abspath(__file__))
 for word in relevant_in_question:
 	res = ""
 	try:
-		res = check_output(["./get_synonyms.py", word, "n"]).strip().replace("_", " ").split(", ")
+		res = check_output(["./get_synonyms.py", word, "stdout", "n"]).strip().replace("_", " ").split(", ")
 		if res != ['']:
 			with_synonyms += res
 
@@ -84,7 +84,7 @@ for word in relevant_in_question:
 
 log("Synonyme für Subjekt und Objekt: " + str(with_synonyms))
 if len(with_synonyms) == 0:
-	log("Nach Entfernung der Stoppwörter ist nichts mehr übrig geblieben - keine Suche möglich - Frage zu ungenau.")
+	log("Nach Entfernung der Stoppwörter ist nichts mehr übrig geblieben - keine Suche möglich - Frage zu ungenau.\n")
 	sys.exit(4)
 
 
@@ -107,7 +107,7 @@ for table in tables:
 				v = en.verb.past_participle(table.split("_")[0])
 				answer_sents_predicates += [ "%s is %s by %s." % (first, v, row[1]) ]
 			else:
-				answer_sents_predicates += [ "%s %ss %s." % (first, table, row[1]) ]
+				answer_sents_predicates += [ "%s %s %s." % (first, table, row[1]) ]
 match_count = len(set(answer_sents_predicates))
 log("Anzahl Funde in Prädikattabellen: " + str(match_count))
 

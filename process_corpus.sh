@@ -20,6 +20,8 @@ if [ ! -f "$corpus" ]; then
 	exit 1
 fi
 
+
+
 java -Xmx512m -jar ReVerb/reverb-latest.jar "$corpus" > $reverbout.txt 2> /dev/null
 echo "filename;sentence number;arg1;rel;arg2;arg1 start;arg1 end;rel start;rel end;arg2 start;arg2 end;conf;sentence words;sentence pos tags;sentence chunk tags;arg1 normalized;rel normalized;arg2 normalized" > $reverbout.csv
 sed -E -e 's/	/;/g' -e 's/"//g' $reverbout.txt >> $reverbout.csv
@@ -28,11 +30,13 @@ printf "\n\nparallel: $(wc -l $reverbout.txt | xargs | cut -f1 -d\ ) Relationen 
 rm $reverbout.txt
 
 
+
+
 ./relation_extract.py $reverbout.csv $db
 result_relation_extract=$?
 
 if [ $result_relation_extract -ne 0 ]; then
-	printf "parallel: relation_extract einen Fehler verursacht ... Abbruch komplett, sobald Frage verarbeitet wurde\n\n----\n" >> pipeline_log.md
+	printf "parallel: relation_extract einen Fehler verursacht ... Abbruch komplett, sobald Frage verarbeitet wurde\n\n" >> pipeline_log.md
 
 	exit 2
 fi

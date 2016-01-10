@@ -1,6 +1,5 @@
 #!/bin/bash
 
-debug=0
 
 
 if [ $# -ne 2 ]; then
@@ -15,7 +14,7 @@ qfile="$1"
 resultfile="$2"
 
 if [ ! -f "$qfile" ]; then
-	>&2 echo "Das Dokument $qfile existiert nicht!"
+	printf "\tDas Dokument $qfile existiert nicht!\n" >> pipeline_log.md
 	exit 2
 fi
 

@@ -1,18 +1,5 @@
 #!/bin/bash
 
-db="relations.db"
-corpus="corpora/CloudComputing.txt"
-question_relation_file="question_relation.txt"
-answer_file="answers.txt"
-
-if [[ ! -f pipeline_log.md ]]; then
-	cp new_pipeline_log.md pipeline_log.md
-fi
-
-lastcommit=$(git rev-parse HEAD)
-printf "\n\n### $(date +"%Y-%m-%d %H:%M") - ${lastcommit:0:6}\n" >> pipeline_log.md
-
-
 
 
 # Parameterhandling
@@ -28,12 +15,43 @@ Als dritter Parameter kann justonce übergeben werden, damit nur eine einzige Fr
 EOF
 fi
 
+log(){
+	s="$1"
+	if [[ "$2" == *with_echo* ]]; then
+		echo "$s"
+
+		if [[ "$2" == *no_tab* ]]; then
+			printf ">$s\n" >> pipeline_log.md
+		else
+			printf "\t>$s\n" >> pipeline_log.md
+
+		fi
+	else
+		printf "$s" >> pipeline_log.md
+	fi
+}
+
+
+
+# Variablen und Start
+db="relations.db"
+corpus="corpora/CloudComputing.txt"
+question_relation_file="question_relation.txt"
+answer_file="answers.txt"
+
+if [[ ! -f pipeline_log.md ]]; then
+	cp new_pipeline_log.md pipeline_log.md
+fi
+
+lastcommit=$(git rev-parse HEAD)
+log "\n\n### $(date +"%Y-%m-%d %H:%M") - ${lastcommit:0:6}\n"
+
 
 
 if [[ $1 == "dbready" ]]; then
-	printf "Datenbank wird aufgrund der Übergabe des Parameters dbready nicht neu erstellt.\n\n" >> pipeline_log.md
+	log "Datenbank wird aufgrund der Übergabe des Parameters dbready nicht neu erstellt.\n\n"
 else
-	printf "parallel: Beginne process_corpus.sh\n\n" >> pipeline_log.md
+	log "parallel: Beginne process_corpus.sh\n\n"
 
 	./process_corpus.sh "$corpus" $db &
 fi	
@@ -42,6 +60,7 @@ fi
 if [[ $3 == "justonce" ]]; then
 	justonce="true"
 fi	
+
 
 
 
@@ -55,33 +74,28 @@ qasystem(){
 
 	if [[ -f "$q" ]]; then
 		return 1
-	else
-		printf "q: $q ($(date +"%H:%M:%S"))\n\n" >> pipeline_log.md
+	fi
+
+	log "\n<span class='big'>q: $q ($(date +"%H:%M:%S"))</span>\n\n"
 
 
-		last_index=${#q} && last_index=$(($last_index-1))
-		last=${q:$last_index}
-		number_of_question_marks=$(grep -o "?" <<< "$q" | wc -l | xargs)
+	last_index=${#q} && last_index=$(($last_index-1))
+	last=${q:$last_index}
+	number_of_question_marks=$(grep -o "?" <<< "$q" | wc -l | xargs)
 
-		if [[ $last != "?" || $number_of_question_marks -eq 0 ]]; then
-			echo "Please pose one question only."
-			printf "\tlast($last) != ? || number_of_question_marks($number_of_question_marks) -eq 0\n\n" >> pipeline_log.md
-			return
-		elif [[ $number_of_question_marks -gt 1 ]]; then
-			echo "Please pose only one question at a time."
-			printf "\tnumber_of_question_marks($number_of_question_marks) -gt 1\n\n" >> pipeline_log.md
-			return
-		fi
+	if [[ $last != "?" || $number_of_question_marks -eq 0 ]]; then
+		log "Please pose one question only." with_echo
+		log "\tlast($last) != ? || number_of_question_marks($number_of_question_marks) -eq 0\n\n"
+		return
+	elif [[ $number_of_question_marks -gt 1 ]]; then
+		log "Please pose only one question at a time." with_echo
+		log "\tnumber_of_question_marks($number_of_question_marks) -gt 1\n\n"
+		return
 	fi
 
 
 	qfile="question.txt"
 	echo "$q" > $qfile
-
-
-
-
-
 
 	./process_question_reverb.sh $qfile $question_relation_file
 	result_process_question_reverb=$?
@@ -91,35 +105,42 @@ qasystem(){
 		result_process_question_stanford=$?
 
 		if [ $result_process_question_stanford -eq 1 ]; then
-			echo "I do not understand your question, sorry."
+			log "I do not understand your question, sorry." with_echo
 			return
 		fi
 	elif [ $result_process_question_reverb -eq 2 ]; then
-		echo "Internal Error 1"
+		log "Internal Error 1" with_echo
 		exit
 	else
-		printf "\tExtraktion mit ReVerb erfolgreich\n" >> pipeline_log.md
+		log "\tExtraktion mit ReVerb erfolgreich\n"
 	fi
 
 	rm question.txt
 
-	printf "\n\t$question_relation_file:\n" >> pipeline_log.md
+	log "\n\t$question_relation_file:\n"
 	awk '{printf "\t"$0"\n";}' $question_relation_file >> pipeline_log.md
 
 	if [[ $(wc -l $question_relation_file | xargs | cut -f1 -d\ ) -gt 3 ]]; then
-		echo "Internal error 2"
-		printf "\t\$question_relation_file hat mehr als drei Zeilen ... Abbruch dieser Frage\n\n----\n" >> pipeline_log.md
+		log "Internal error 2" with_echo
+		log "\t\$question_relation_file hat mehr als drei Zeilen ... Abbruch dieser Frage\n\n"
 		return
 	fi
 
 
 
 
-
+	predicate_synonyms_file="predicate_synonyms.txt"
 	question_verb="$(awk 'NR == 2' $question_relation_file)"
-	syns=$(./get_synonyms.py "$question_verb" v 2)
-	printf "\n\tgefundene Synonyme zum question verb ($question_verb): $syns\n" >> pipeline_log.md
+	./get_synonyms.py "$question_verb" $predicate_synonyms_file v 2
+	result_get_synonyms=$?
 
+	if [ $result_get_synonyms -eq 0 ]; then
+		syns=$(cat $predicate_synonyms_file)
+		rm $predicate_synonyms_file
+		log "\n\tgefundene Synonyme zum question verb ($question_verb): $syns\n"
+	else
+		log "\n\tget_synonyms Fehler $result_get_synonyms: NLTK kennt $question_verb nicht als Verb. Wahrscheinlich keine Tabellen auffindbar\n"
+	fi
 
 
 
@@ -129,10 +150,10 @@ qasystem(){
 		wait %1 2> /dev/null
 		process_corpus_result=$?
 		if [ $process_corpus_result -eq 1 ]; then
-			echo "I could not find the document. I must terminate this session, sorry."
+			log "I could not find the document. I must terminate this session, sorry." "with_echo no_tab"
 			exit
 		elif [[ $process_corpus_result -eq 2 ]]; then
-			echo "There are errors in the document. I must stop, sorry."
+			log "There are errors in the document. I must stop, sorry." "with_echo no_tab"
 			exit
 		fi
 	fi
@@ -143,36 +164,43 @@ qasystem(){
 
 
 	tables=$(./get_matching_table_names.py $db "$question_verb" "$syns")
-	printf "\n\tgefundene Tabellen: $tables\n" >> pipeline_log.md
+	log "\n\tgefundene Tabellen: $tables\n\n"
 
-	if [ ! -z "$tables" ]; then
-		./print_matches_in_tables.py $db $question_relation_file "$tables" $answer_file
-		result_print_matches_in_tables=$?
+	if [ -z "$tables" ]; then
+		log "Sorry, I don't know the answer." with_echo
+		return
+	fi
 
-		if [ $result_print_matches_in_tables -eq 4 ]; then
-			echo "Please be more specific. Your question was too vague."	
-			return
-		elif [ $result_print_matches_in_tables -ne 0 ]; then
-			printf "\tFehler in print_matches_in_tables ... (Rückgabewert war $result_print_matches_in_tables)\n" >> pipeline_log.md
-		fi
 
-		if [[ -z "$(cat $answer_file)" ]]; then
-			echo "Unfortunately I can't find information about your question."	
-			printf "\tkeine Antwort gefunden\n\n" >> pipeline_log.md
-		else
-			sed 's/_/ /g' $answer_file > tmp
-			rm $answer_file
-			mv tmp $answer_file
-			answers=$(cat $answer_file)
-			rm $answer_file
-			echo $answers
-			answers_formatted=$(printf "\n$answers" | tr '\n' '#' | sed -E $'s/#/\\\n- /g')
-			printf "\n\ngefundene Antworten:\n$answers_formatted\n\n" >> pipeline_log.md
-		fi
+	./print_matches_in_tables.py $db $question_relation_file "$tables" $answer_file
+	result_print_matches_in_tables=$?
+
+	if [ $result_print_matches_in_tables -eq 4 ]; then
+		log "Please be more specific. Your question was too vague." with_echo	
+		return
+	elif [ $result_print_matches_in_tables -ne 0 ]; then
+		log "\tFehler in print_matches_in_tables ... (Rückgabewert war $result_print_matches_in_tables)\n"
+	fi
+
+	if [[ -z "$(cat $answer_file)" ]]; then
+		log "Unfortunately I can't find information about your question." with_echo
 	else
-		echo "Sorry, I don't know the answer."
+		sed 's/_/ /g' $answer_file > tmp
+		rm $answer_file
+		mv tmp $answer_file
+		answers=$(cat $answer_file)
+		rm $answer_file
+		echo $answers
+		answers_formatted=$(printf "\n$answers" | tr '\n' '#' | sed -E $'s/#/\\\n- /g')
+		log "\n\ngefundene Antworten:\n$answers_formatted\n\n"
 	fi
 }
+
+
+
+
+
+
 
 
 qasystem "$@"
@@ -182,8 +210,10 @@ if [[ $result -eq 1 ]]; then
 	all_questions_file="$2"
 	dbready="$1"
 
-	printf "\n\n**Start einer Batchverarbeitung mit Datei:** <code>$all_questions_file</code>\n\n" >> pipeline_log.md
+	log "\n\n**Start einer Batchverarbeitung mit Datei:** <code>$all_questions_file</code>\n\n"
 
+	#Sonst wird evtl die letzte Zeile weggelassen
+	printf "\n" >> $all_questions_file
 
 	while read line; do
 		if [[ "$line" != _* && $line != "" ]]; then
