@@ -1,0 +1,26 @@
+THE BEGINNER’S GUIDE TO SEO
+
+New to SEO? Need to polish up your knowledge? The Beginner's Guide to SEO has been read over 1 million times and provides comprehensive information you need to get on the road to professional quality SEO.
+1.	How Search Engines Operate
+2.	How People Interact With Search Engines
+3.	Why Search Engine Marketing is Necessary
+4.	The Basics of Search Engine Friendly Design & Development
+5.	Keyword Research
+6.	How Usability, Experience, & Content Affect Rankings
+7.	Growing Popularity and Links
+8.	Search Engine's Tools for Webmasters Intro
+9.	Myths & Misconceptions About Search Engines
+10.	Measuring and Tracking Success
+SEO is the active practice of optimizing a web site by improving internal and external aspects in order to increase the traffic the site receives from search engines. Firms that practice SEO can vary; some have a highly specialized focus, while others take a more broad and general approach. Optimizing a web site for search engines can require looking at so many unique elements that many practitioners of SEO (SEOs) consider themselves to be in the broad field of website optimization (since so many of those elements intertwine). 
+This guide is designed to describe all areas of SEO - from discovery of the terms and phrases that will generate traffic, to making a site search engine friendly, to building the links and marketing the unique value of the site/organization's offerings. Don't worry, if you are confused about this stuff, you are not alone.
+
+Why does my company/organization/website need SEO?
+The majority of web traffic is driven by the major commercial search engines - Google, Bing and Yahoo!. If your site cannot be found by search engines or your content cannot be put into their databases, you miss out on the incredible opportunities available to websites provided via search - people who want what you have visiting your site. Whether your site provides content, services, products, or information, search engines are a primary method of navigation for almost all Internet users. (See: Search Engine Market Share below) 
+Search queries, the words that users type into the search box which contain terms and phrases best suited to your site, carry extraordinary value. Experience has shown that search engine traffic can make (or break) an organization's success. Targeted visitors to a website can provide publicity, revenue, and exposure like no other. Investing in SEO, whether through time or finances, can have an exceptional rate of return.
+
+Why can't the search engines figure out my site without SEO help?
+Search engines are always working towards improving their technology to crawl the web more deeply and return increasingly relevant results to users. However, there is and will always be a limit to how search engines can operate. Whereas, the right moves can net you thousands of visitors and attention, the wrong moves can hide or bury your site deep in the search results where visibility is minimal. In addition to making content available to search engines, SEO can also help boost rankings so that content that has been found will be placed where searchers will more readily see it. The online environment is becoming increasingly competitive, and those companies who perform SEO will have a decided advantage in visitors and customers.
+
+How much of this article do I need to read?
+If you are serious about improving search traffic and are unfamiliar with SEO, we recommend reading this guide front-to-back. There's a printable PDF version for those who'd prefer, and dozens of linked-to resources on other sites and pages that are worthy of your attention. Although this guide is long, we've attempted to remain faithful to Mr. William Strunk's famous quote:
+"A sentence should contain no unnecessary words, a paragraph no unnecessary sentences, for the same reason that a drawing should have no unnecessary lines and a machine no unnecessary parts."

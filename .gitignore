@@ -5,3 +5,5 @@ stanford-openie-models.jar
 pipeline_log.md*
 test.sh
 answers.txt
+current_batch.txt
+word_file.txt
