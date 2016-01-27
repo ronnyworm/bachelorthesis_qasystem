@@ -75,7 +75,7 @@ fi
 
 
 
-
+# Hauptfunktion
 qasystem(){
 	# Parameter verarbeiten
 	if [[ "$1" != "auto_mode" ]]; then
@@ -148,7 +148,7 @@ qasystem(){
 
 
 
-	# Synonyme für Prädikat finden
+	# Synonyme fuer Praedikat finden
 	predicate_synonyms_file="predicate_synonyms.txt"
 	question_verb="$(awk 'NR == 2' $question_relation_file)"
 	./get_synonyms.py "$question_verb" $predicate_synonyms_file v 2

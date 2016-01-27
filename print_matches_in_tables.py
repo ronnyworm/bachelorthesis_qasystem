@@ -78,7 +78,7 @@ for word in relevant_in_question:
 		if res != ['']:
 			with_synonyms += res
 
-	# Hier wird ignoriert, wenn get_synonyms für ein Wort einen Fehler auslöst. Das wird gewertet als "kein Synonym gefunden"
+	# Hier wird ignoriert, wenn get_synonyms fuer ein Wort einen Fehler ausloest. Das wird gewertet als "kein Synonym gefunden"
 	except Exception, e:
 		pass
 
@@ -100,7 +100,7 @@ for table in tables:
 		if debug:
 			print("q: " + 'SELECT * FROM ' + scrub(table) + ' WHERE subject like "%' + scrub(syn) + '%" or object like "%' + scrub(syn) + '%"')
 		for row in c.execute('SELECT * FROM ' + scrub(table) + ' WHERE subject like "%' + scrub(syn) + '%" or object like "%' + scrub(syn) + '%"'):
-			# Ersten Buchstaben groß schreiben
+			# Ersten Buchstaben gross schreiben
 			first = row[0][:1].upper() + row[0][1:]
 
 			if table.endswith("_by"):

@@ -49,23 +49,23 @@ if len(sys.argv) > 3:
 
 
 try:
-	ss = wn.synset(word + "." + word_class + ".01")
+	found_synset = wn.synset(word + "." + word_class + ".01")
 except Exception, e:
 	warning("Das Wort " + word + " wurde nicht gefunden ...")
 	sys.exit(2)
 
-#similar_synsets = [str(ss.path_similarity(synset)) + ":" + str(synset.name()) for synset in wn.synsets(word) if ss.path_similarity(synset) != 1.0 and ss.path_similarity(synset) > 0.2]
+#similar_synsets = [str(found_synset.path_similarity(synset)) + ":" + str(synset.name()) for synset in wn.synsets(word) if found_synset.path_similarity(synset) != 1.0 and found_synset.path_similarity(synset) > 0.2]
 similar_synsets = []
 for synset in wn.synsets(word):
 	if debug_level > 1:
-		print(str(ss.path_similarity(synset)) + " - " + str(synset.name()) + ": " + str(synset.lemma_names()))
+		print(str(found_synset.path_similarity(synset)) + " - " + str(synset.name()) + ": " + str(synset.lemma_names()))
 
-	if ss.path_similarity(synset) != 1.0 and ss.path_similarity(synset) > similarity_threshold:
-		similar_synsets += [ str(ss.path_similarity(synset)) + ":" + str(synset.name()) ]
+	if found_synset.path_similarity(synset) != 1.0 and found_synset.path_similarity(synset) > similarity_threshold:
+		similar_synsets += [ str(found_synset.path_similarity(synset)) + ":" + str(synset.name()) ]
 
 #print(str(similar_synsets))
 
-synonyms = [s for s in ss.lemma_names() if s != word]
+synonyms = [s for s in found_synset.lemma_names() if s != word]
 
 if len(similar_synsets) > 0:
 	sorted_similar_synsets = sorted(similar_synsets, reverse=True)

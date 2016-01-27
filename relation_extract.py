@@ -89,7 +89,7 @@ def create_extraction_tables(relations):
 
 		table_scrubbed = scrub(table)
 
-		# create kann nicht als Name einer Tabelle verwendet werden, weil es ein Schlüsselwort in SQL ist
+		# create kann nicht als Name einer Tabelle verwendet werden, weil es ein Schluesselwort in SQL ist
 		if table_scrubbed == "create":
 			table_scrubbed = "create_a"
 

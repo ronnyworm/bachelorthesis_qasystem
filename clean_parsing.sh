@@ -4,6 +4,8 @@
 
 if [ $# -eq 0 ]; then
     cat << EOF
+Dieses Skript entfernt die Angabe der Wortarten aus dem Ergebnis des Stanford Parsers.
+
 Als erster Parameter muss die Anzahl der Zeilen nach den Matches übergeben werden (wahrscheinlich 1 oder 2).
 Als zweiter Parameter müssen die Patterns übergeben werden, nach denen gesucht werden soll (wahrscheinlich etwa so: -e VBD -e VBZ).
 Als erster Parameter kann auch "nogrep" übergeben werden, dann wird direkt mit sed begonnen - dabei wird die Datei verarbeitet, die als zweiter Parameter übergeben wird.
