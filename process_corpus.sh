@@ -32,11 +32,18 @@ rm $reverbout.txt
 
 
 
-./relation_extract.py $reverbout.csv $db
+./relation_extract.py $reverbout.csv $db 2> rel_extract_errors.txt
 result_relation_extract=$?
 
+if [[ ! -z "$(cat rel_extract_errors.txt)" ]]; then
+	printf "parallel: es gab Fehler in relation_extract:\n<blockquote class='warning'>" >> pipeline_log.md
+	cat rel_extract_errors.txt >> pipeline_log.md
+	printf "</blockquote>\n\n" >> pipeline_log.md
+fi
+rm rel_extract_errors.txt
+
 if [ $result_relation_extract -ne 0 ]; then
-	printf "parallel: relation_extract einen Fehler verursacht ... Abbruch komplett, sobald Frage verarbeitet wurde\n\n" >> pipeline_log.md
+	printf "parallel: relation_extract hat einen Fehler verursacht ... Abbruch komplett, sobald Frage verarbeitet wurde\n\n" >> pipeline_log.md
 
 	exit 2
 fi

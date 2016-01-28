@@ -92,8 +92,8 @@ if len(with_synonyms) == 0:
 conn = sqlite3.connect(dbname)
 c = conn.cursor()
 
-answer_sents_predicates = []
 answer_sents_relation_nouns = []
+answer_sents_predicates = []
 
 for table in tables:
 	for syn in with_synonyms:

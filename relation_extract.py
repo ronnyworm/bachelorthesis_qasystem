@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 #coding=UTF-8
 
+from __future__ import print_function
 import sqlite3
 import os
 import os.path
@@ -13,6 +14,9 @@ debug = False
 # http://stackoverflow.com/questions/3247183/variable-table-name-in-sqlite
 def scrub(sent):
 	return ''.join( chr for chr in sent if chr.isalnum() or chr == '_' or chr == ' ' )
+
+def warning(*objs):
+	print("WARNING: ", *objs, file=sys.stderr)
 
 if len(sys.argv) != 3:
 	print("Es muss als erster Parameter die Datei angegeben werden, in der die Ausgabe von Reverb mit Semikola statt Tab getrennt steht (und in der ersten Zeile sind nur Spaltenüberschriften).")
@@ -89,15 +93,18 @@ def create_extraction_tables(relations):
 
 		table_scrubbed = scrub(table)
 
-		# create kann nicht als Name einer Tabelle verwendet werden, weil es ein Schluesselwort in SQL ist
-		if table_scrubbed == "create":
-			table_scrubbed = "create_a"
+		# diese Begriffe können nicht als Name einer Tabelle verwendet werden, weil sie Schluesselwoerter in SQL sind
+		if table_scrubbed in ["create", "set", "drop"]:
+			table_scrubbed += "_a"
 
-		if table_scrubbed not in existing_tables:
-			c.execute("CREATE TABLE %s (subject text, object text)" % str(table_scrubbed)) 
-		c.execute("INSERT INTO %s VALUES ('%s','%s')" % (table_scrubbed, subj_scrubbed, obj_scrubbed))
+		try:
+			if table_scrubbed not in existing_tables:
+				c.execute("CREATE TABLE %s (subject text, object text)" % str(table_scrubbed)) 
+			c.execute("INSERT INTO %s VALUES ('%s','%s')" % (table_scrubbed, subj_scrubbed, obj_scrubbed))
 
-		existing_tables.add(table_scrubbed)
+			existing_tables.add(table_scrubbed)
+		except Exception as e:
+			warning(str(e))
 
 		index += 1	
 
