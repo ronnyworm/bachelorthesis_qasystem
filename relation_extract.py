@@ -94,7 +94,7 @@ def create_extraction_tables(relations):
 		table_scrubbed = scrub(table)
 
 		# diese Begriffe können nicht als Name einer Tabelle verwendet werden, weil sie Schluesselwoerter in SQL sind
-		if table_scrubbed in ["create", "set", "drop"]:
+		if table_scrubbed in ["create", "set", "drop", "escape", "join", "commit", "add", "order", "select"]:
 			table_scrubbed += "_a"
 
 		try:
