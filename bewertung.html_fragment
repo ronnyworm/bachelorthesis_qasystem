@@ -1,0 +1,15 @@
+Bewertung:
+
+<form action="">
+  <input name="choice" type="radio"> 1
+  <input name="choice" type="radio"> 2
+  <input name="choice" type="radio"> 3
+  <input name="choice" type="radio"> 4
+  <input name="choice" type="radio"> 5
+  <input name="choice" type="radio"> 6
+  <input name="choice" type="radio"> 7
+  <input name="choice" type="radio"> 8
+  <input name="choice" type="radio"> 9
+  <input name="choice" type="radio"> 10
+</form>
+
