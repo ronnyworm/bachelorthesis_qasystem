@@ -1,0 +1,11 @@
+
+
+
+Ihr Geschlecht:
+
+<form action="">
+  <input name="choice" type="radio"> m
+  <input name="choice" type="radio"> w
+</form>
+
+

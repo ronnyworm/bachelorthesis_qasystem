@@ -1,6 +1,6 @@
 #!/bin/bash
 
-corpora=( Twenty_Years_of_South_African_Democracy application-for-a-u.s.-passport Introduction-to-Cloud-Computing )
+corpora=( Introduction-to-Cloud-Computing Twenty_Years_of_South_African_Democracy application-for-a-u.s.-passport )
 
 logfilename="$(date +"%Y-%m-%d_%H-%M")_questions_with_answers.md"
 
@@ -31,7 +31,7 @@ for corpus in "${corpora[@]}"; do
     question_index=1
 	for start_line in "${question_boundaries[@]}" ; do
         question=$(awk -v line=$question_index 'NR==line' corpora/test_questions_$corpus.txt)
-		echo "### $question" >> $logfilename
+		printf "\n\n<span class='big'>$question</span>\n\n" >> $logfilename
 
         if [[ ! -z ${question_boundaries[next_index]} ]]; then
             difference=$((${question_boundaries[next_index]}-$start_line))
@@ -52,8 +52,8 @@ for corpus in "${corpora[@]}"; do
 
 done
 
-printf "\n\n<span class='big'>Vielen Dank für Ihre Teilnahme!</span>\n\n" >> $logfilename
+cat geschlecht.html_fragment >> $logfilename
 
-rm word_file.txt
+
 rm current_batch.txt
 rm current_question_section.txt
