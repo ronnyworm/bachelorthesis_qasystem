@@ -46,8 +46,14 @@ if [[ ! -f pipeline_log.md ]]; then
 	cp new_pipeline_log.md pipeline_log.md
 fi
 
-lastcommit=$(git rev-parse HEAD)
-log "\n\n### $(date +"%Y-%m-%d %H:%M") - ${lastcommit:0:6}\n"
+# Letzte Commit-ID in Logfile speichern, wenn git installiert ist
+git --version 2> /dev/null > /dev/null
+if [[ $? -eq 0 ]]; then
+	lastcommit=$(git rev-parse HEAD)
+	log "\n\n### $(date +"%Y-%m-%d %H:%M") - ${lastcommit:0:6}\n"
+else
+	log "\n\n### $(date +"%Y-%m-%d %H:%M")\n"
+fi
 
 
 

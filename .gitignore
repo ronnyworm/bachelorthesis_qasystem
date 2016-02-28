@@ -8,3 +8,5 @@ answers.txt
 current_batch.txt
 word_file.txt
 *_questions_with_answers*
+Stanford-Parser
+nltk_data

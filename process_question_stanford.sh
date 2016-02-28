@@ -18,7 +18,7 @@ if [ ! -f "$qfile" ]; then
 	exit 2
 fi
 
-cd "Stanford OpenIE"
+cd "Stanford-OpenIE"
 #Es wird nur die erste Extraktion betrachtet (NR==1)
 java -mx1g -cp stanford-openie.jar:stanford-openie-models.jar:slf4j.jar edu.stanford.nlp.naturalli.OpenIE "../$qfile" 2> /dev/null | awk -v FS="\t" 'NR==1{printf("%s\n%s\n%s\n", $2, $3, $4)}' > "../$resultfile"
 #rm ../$resultfile
@@ -28,7 +28,7 @@ cd ..
 if [[ -z "$(cat $resultfile)" ]]; then
 	printf "\tVersuch Extraktion mit Stanford Parser\n" >> pipeline_log.md
 	#Dollarzeichen der Annotationen von Possesivprononmen entfernen mit sed
-	lexparser.sh "$qfile" 2> /dev/null | sed -E 's/\$//g' > result.txt
+	Stanford-Parser/lexparser.sh "$qfile" 2> /dev/null | sed -E 's/\$//g' > result.txt
 
 	# head: bei mehreren Funden nur den ersten betrachten
 	grep -A 1 -B 1 -e VBD -e VBZ -e VBN -e VBP result.txt | head -n 3 > tmp_relation.txt

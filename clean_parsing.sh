@@ -18,7 +18,7 @@ after="$1"
 patterns="$2"
 
 if [ "$1" == "nogrep" ]; then
-	cat "$2" | sed -E -e 's/^[ \t]*//' -e 's/\([A-Z]{2,} ?//g' -e 's/)//g' -e 's/\(\. \?//g'
+	cat "$2" | sed -E -e 's/^[ \t]*//' -e 's/\([A-Z]{2,} ?//g' -e 's/\)//g' -e 's/\(\. \?//g'
 else
-	grep -A $after -B 1 $patterns result.txt | sed -E -e 's/^[ \t]*//' -e 's/\([A-Z]{2,} ?//g' -e 's/)//g' -e 's/\(\. \?//g'
+	grep -A $after -B 1 $patterns result.txt | sed -E -e 's/^[ \t]*//' -e 's/\([A-Z]{2,} ?//g' -e 's/\)//g' -e 's/\(\. \?//g'
 fi
