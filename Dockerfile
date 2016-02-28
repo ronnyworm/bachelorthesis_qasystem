@@ -56,3 +56,4 @@ ADD nltk_data/ /root/nltk_data/
 WORKDIR /fasapp
 
 # ./pipeline.sh corpora/Introduction-to-Cloud-Computing.txt stdin
+# https://hub.docker.com/r/ronnydockerhubid/bachelorarbeitfas/
